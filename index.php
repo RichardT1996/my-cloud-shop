@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MyShop - Welcome</title>
+  <title>ShopSphere - Welcome</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 0; background: #f4f4f4; }
     .header { background: #2c3e50; color: #fff; padding: 20px; text-align: center; }
@@ -17,14 +17,14 @@
 <body>
   <div class="header">
     <div class="container">
-      <h1>MyShop</h1>
+      <h1>ShopSphere</h1>
       <p>Your one-stop destination for amazing products</p>
     </div>
   </div>
 
   <div class="container">
     <div class="welcome-text">
-      <h2>Welcome to MyShop</h2>
+      <h2>Welcome to ShopSphere</h2>
       <p>Join our community today to access exclusive deals and features!</p>
       <div class="actions">
         <a href="register.php" class="btn">Create Your Account</a>
