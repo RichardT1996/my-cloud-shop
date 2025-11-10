@@ -27,6 +27,7 @@
       <h2>Welcome to ShopSphere</h2>
       <p>Join our community today to access exclusive deals and features!</p>
       <div class="actions">
+        <a href="login.php" class="btn">Log In</a>
         <a href="register.php" class="btn">Create Your Account</a>
         <a href="view_users.php" class="btn">View Registered Users</a>
       </div>
