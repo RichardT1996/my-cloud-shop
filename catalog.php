@@ -106,7 +106,7 @@ sqlsrv_close($conn);
     <div>
       <a href="index.php" style="background:#3498db; margin-right:8px;">Home</a>
       <?php if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@gmail.com'): ?>
-        <a href="admin_dashboard.php" style="background:#9b59b6; margin-right:8px;">Manage Products</a>
+        <a href="admin_dashboard.php">Manage Products</a>
       <?php endif; ?>
       <a href="logout.php">Log Out</a>
     </div>
