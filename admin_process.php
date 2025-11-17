@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 // DB connection
-$serverName = "tcp:mydatabase-replica.database.windows.net,1433";
+$serverName = "tcp:mycardiffmet1.database.windows.net,1433";
 $connectionOptions = array(
     "Database" => "myDatabase",
     "Uid" => "myadmin",
