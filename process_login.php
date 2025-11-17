@@ -73,7 +73,7 @@ if (!password_verify($password, $hashed)) {
     exit();
 }
 
-// Success: set session and redirect
+// Success: set session and redirect to catalog
 $_SESSION['user_id'] = $user['id'];
 $_SESSION['user_name'] = $user['name'];
 $_SESSION['user_email'] = $user['email'];
@@ -81,5 +81,5 @@ $_SESSION['user_email'] = $user['email'];
 sqlsrv_free_stmt($stmt);
 sqlsrv_close($conn);
 
-header('Location: index.php');
+header('Location: catalog.php');
 exit();
