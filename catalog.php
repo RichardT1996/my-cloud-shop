@@ -61,35 +61,36 @@ sqlsrv_close($conn);
   <title>Watch Catalog - ShopSphere</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
-    .header { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: #fff; padding: 30px 20px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
-    .header h1 { margin-bottom: 8px; font-size: 2.5em; font-weight: 700; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
-    .header p { font-size: 1.1em; opacity: 0.95; }
-    .user-bar { background: rgba(0,0,0,0.15); backdrop-filter: blur(10px); color: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-    .user-bar .user-info { font-size: 14px; }
-    .user-bar a { color: #fff; text-decoration: none; padding: 10px 20px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 25px; font-size: 14px; font-weight: 600; transition: all 0.3s ease; margin-left: 8px; }
-    .user-bar a:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(245, 87, 108, 0.4); }
-    .user-bar a:first-child { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
-    .user-bar a:first-child:hover { box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4); }
-    .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
-    .catalog-header { text-align: center; margin-bottom: 40px; }
-    .catalog-header h2 { color: #fff; margin-bottom: 12px; font-size: 2em; font-weight: 700; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
-    .catalog-header p { color: rgba(255,255,255,0.9); font-size: 1.1em; }
-    .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
-    .watch-card { background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.12); transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.8); }
-    .watch-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 16px 40px rgba(0,0,0,0.2); }
-    .watch-image-container { width: 100%; height: 300px; background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%); display: flex; align-items: center; justify-content: center; padding: 30px; position: relative; overflow: hidden; }
-    .watch-image-container::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%); }
-    .watch-image { max-width: 100%; max-height: 100%; object-fit: contain; position: relative; z-index: 1; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1)); }
-    .watch-info { padding: 24px; background: linear-gradient(to bottom, #fff 0%, #f8f9fa 100%); }
-    .watch-brand { color: #6c757d; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; font-weight: 700; }
-    .watch-name { font-size: 20px; color: #2c3e50; margin-bottom: 10px; font-weight: 700; line-height: 1.3; }
-    .watch-description { color: #6c757d; font-size: 14px; margin-bottom: 16px; line-height: 1.5; }
-    .watch-price { font-size: 26px; color: #10b981; font-weight: 800; text-shadow: 1px 1px 2px rgba(16, 185, 129, 0.2); }
-    .empty-message { text-align: center; padding: 80px 20px; color: #fff; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 16px; margin-top: 40px; }
-    .empty-message p { font-size: 20px; margin-bottom: 20px; }
-    .btn { display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 14px 32px; text-decoration: none; border-radius: 25px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); }
-    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6); }
+    body { font-family: 'Helvetica Neue', 'Arial', sans-serif; background: #0a0a0a; color: #f5f5f5; }
+    .header { background: #000; color: #fff; padding: 25px 0; text-align: center; border-bottom: 1px solid #222; }
+    .header h1 { font-size: 2em; font-weight: 300; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 5px; }
+    .header p { font-size: 0.9em; color: #999; letter-spacing: 2px; text-transform: uppercase; font-weight: 300; }
+    .user-bar { background: #111; color: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; }
+    .user-bar .user-info { font-size: 13px; color: #999; font-weight: 300; }
+    .user-bar .user-info strong { color: #fff; font-weight: 400; }
+    .user-bar a { color: #fff; text-decoration: none; padding: 8px 20px; background: transparent; border: 1px solid #444; border-radius: 0; font-size: 12px; font-weight: 400; transition: all 0.3s ease; margin-left: 10px; letter-spacing: 1px; text-transform: uppercase; }
+    .user-bar a:hover { background: #fff; color: #000; border-color: #fff; }
+    .container { max-width: 1400px; margin: 60px auto; padding: 0 40px; }
+    .catalog-header { text-align: center; margin-bottom: 60px; padding-bottom: 30px; border-bottom: 1px solid #222; }
+    .catalog-header h2 { color: #fff; margin-bottom: 15px; font-size: 2.5em; font-weight: 300; letter-spacing: 3px; text-transform: uppercase; }
+    .catalog-header p { color: #888; font-size: 1em; letter-spacing: 1px; font-weight: 300; }
+    .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 40px; }
+    .watch-card { background: #111; border: 1px solid #222; overflow: hidden; transition: all 0.4s ease; }
+    .watch-card:hover { border-color: #444; transform: translateY(-5px); box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+    .watch-image-container { width: 100%; height: 350px; background: #1a1a1a; display: flex; align-items: center; justify-content: center; padding: 40px; border-bottom: 1px solid #222; }
+    .watch-image { max-width: 90%; max-height: 90%; object-fit: contain; filter: brightness(1.05) contrast(1.1); }
+    .watch-info { padding: 30px; background: #111; }
+    .watch-brand { color: #888; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; font-weight: 400; }
+    .watch-name { font-size: 18px; color: #fff; margin-bottom: 15px; font-weight: 400; line-height: 1.4; letter-spacing: 0.5px; }
+    .watch-description { color: #666; font-size: 13px; margin-bottom: 20px; line-height: 1.6; font-weight: 300; }
+    .watch-price { font-size: 20px; color: #fff; font-weight: 300; letter-spacing: 1px; }
+    .watch-card-footer { padding: 0 30px 30px 30px; background: #111; }
+    .enquire-btn { display: block; width: 100%; padding: 12px; background: transparent; border: 1px solid #444; color: #fff; text-align: center; text-decoration: none; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s ease; font-weight: 400; }
+    .enquire-btn:hover { background: #fff; color: #000; border-color: #fff; }
+    .empty-message { text-align: center; padding: 100px 20px; color: #666; }
+    .empty-message p { font-size: 18px; margin-bottom: 20px; font-weight: 300; letter-spacing: 1px; }
+    .btn { display: inline-block; background: transparent; border: 1px solid #444; color: #fff; padding: 12px 30px; text-decoration: none; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s ease; font-weight: 400; }
+    .btn:hover { background: #fff; color: #000; border-color: #fff; }
   </style>
 </head>
 <body>
@@ -130,14 +131,17 @@ sqlsrv_close($conn);
                 src="<?php echo htmlspecialchars($watch['image_url']); ?>" 
                 alt="<?php echo htmlspecialchars($watch['name']); ?>"
                 class="watch-image"
-                onerror="this.src='https://via.placeholder.com/280x220/cccccc/666666?text=Watch+Image'"
+                onerror="this.src='https://via.placeholder.com/320x320/1a1a1a/666666?text=<?php echo urlencode($watch['brand']); ?>'"
               >
             </div>
             <div class="watch-info">
               <div class="watch-brand"><?php echo htmlspecialchars($watch['brand']); ?></div>
               <div class="watch-name"><?php echo htmlspecialchars($watch['name']); ?></div>
               <div class="watch-description"><?php echo htmlspecialchars($watch['description']); ?></div>
-              <div class="watch-price">$<?php echo number_format($watch['price'], 2); ?></div>
+              <div class="watch-price">£<?php echo number_format($watch['price'], 0); ?></div>
+            </div>
+            <div class="watch-card-footer">
+              <a href="#" class="enquire-btn">Enquire Now</a>
             </div>
           </div>
         <?php endforeach; ?>
