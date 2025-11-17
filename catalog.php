@@ -74,7 +74,8 @@ sqlsrv_close($conn);
     .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
     .watch-card { background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.2s, box-shadow 0.2s; }
     .watch-card:hover { transform: translateY(-4px); box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
-    .watch-image { width: 100%; height: 220px; object-fit: cover; background: #f8f9fa; }
+    .watch-image-container { width: 100%; height: 280px; background: #f8f9fa; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .watch-image { max-width: 100%; max-height: 100%; object-fit: contain; }
     .watch-info { padding: 16px; }
     .watch-brand { color: #7f8c8d; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
     .watch-name { font-size: 18px; color: #2c3e50; margin-bottom: 8px; font-weight: bold; }
@@ -119,12 +120,14 @@ sqlsrv_close($conn);
       <div class="catalog-grid">
         <?php foreach ($watches as $watch): ?>
           <div class="watch-card">
-            <img 
-              src="<?php echo htmlspecialchars($watch['image_url']); ?>" 
-              alt="<?php echo htmlspecialchars($watch['name']); ?>"
-              class="watch-image"
-              onerror="this.src='https://via.placeholder.com/280x220/cccccc/666666?text=Watch+Image'"
-            >
+            <div class="watch-image-container">
+              <img 
+                src="<?php echo htmlspecialchars($watch['image_url']); ?>" 
+                alt="<?php echo htmlspecialchars($watch['name']); ?>"
+                class="watch-image"
+                onerror="this.src='https://via.placeholder.com/280x220/cccccc/666666?text=Watch+Image'"
+              >
+            </div>
             <div class="watch-info">
               <div class="watch-brand"><?php echo htmlspecialchars($watch['brand']); ?></div>
               <div class="watch-name"><?php echo htmlspecialchars($watch['name']); ?></div>
