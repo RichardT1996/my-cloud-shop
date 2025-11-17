@@ -61,30 +61,35 @@ sqlsrv_close($conn);
   <title>Watch Catalog - ShopSphere</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: Arial, sans-serif; background: #f4f4f4; }
-    .header { background: #2c3e50; color: #fff; padding: 20px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    .header h1 { margin-bottom: 5px; }
-    .user-bar { background: #34495e; color: #fff; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+    .header { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: #fff; padding: 30px 20px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+    .header h1 { margin-bottom: 8px; font-size: 2.5em; font-weight: 700; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+    .header p { font-size: 1.1em; opacity: 0.95; }
+    .user-bar { background: rgba(0,0,0,0.15); backdrop-filter: blur(10px); color: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
     .user-bar .user-info { font-size: 14px; }
-    .user-bar a { color: #fff; text-decoration: none; padding: 8px 16px; background: #e74c3c; border-radius: 4px; font-size: 14px; }
-    .user-bar a:hover { background: #c0392b; }
-    .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
-    .catalog-header { text-align: center; margin-bottom: 30px; }
-    .catalog-header h2 { color: #2c3e50; margin-bottom: 10px; }
-    .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
-    .watch-card { background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.2s, box-shadow 0.2s; }
-    .watch-card:hover { transform: translateY(-4px); box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
-    .watch-image-container { width: 100%; height: 280px; background: #f8f9fa; display: flex; align-items: center; justify-content: center; padding: 20px; }
-    .watch-image { max-width: 100%; max-height: 100%; object-fit: contain; }
-    .watch-info { padding: 16px; }
-    .watch-brand { color: #7f8c8d; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
-    .watch-name { font-size: 18px; color: #2c3e50; margin-bottom: 8px; font-weight: bold; }
-    .watch-description { color: #7f8c8d; font-size: 14px; margin-bottom: 12px; line-height: 1.4; }
-    .watch-price { font-size: 22px; color: #27ae60; font-weight: bold; }
-    .empty-message { text-align: center; padding: 60px 20px; color: #7f8c8d; }
-    .empty-message p { font-size: 18px; margin-bottom: 20px; }
-    .btn { display: inline-block; background: #007bff; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 4px; }
-    .btn:hover { background: #0056b3; }
+    .user-bar a { color: #fff; text-decoration: none; padding: 10px 20px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 25px; font-size: 14px; font-weight: 600; transition: all 0.3s ease; margin-left: 8px; }
+    .user-bar a:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(245, 87, 108, 0.4); }
+    .user-bar a:first-child { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+    .user-bar a:first-child:hover { box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4); }
+    .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+    .catalog-header { text-align: center; margin-bottom: 40px; }
+    .catalog-header h2 { color: #fff; margin-bottom: 12px; font-size: 2em; font-weight: 700; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+    .catalog-header p { color: rgba(255,255,255,0.9); font-size: 1.1em; }
+    .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
+    .watch-card { background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.12); transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.8); }
+    .watch-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 16px 40px rgba(0,0,0,0.2); }
+    .watch-image-container { width: 100%; height: 300px; background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%); display: flex; align-items: center; justify-content: center; padding: 30px; position: relative; overflow: hidden; }
+    .watch-image-container::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%); }
+    .watch-image { max-width: 100%; max-height: 100%; object-fit: contain; position: relative; z-index: 1; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1)); }
+    .watch-info { padding: 24px; background: linear-gradient(to bottom, #fff 0%, #f8f9fa 100%); }
+    .watch-brand { color: #6c757d; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; font-weight: 700; }
+    .watch-name { font-size: 20px; color: #2c3e50; margin-bottom: 10px; font-weight: 700; line-height: 1.3; }
+    .watch-description { color: #6c757d; font-size: 14px; margin-bottom: 16px; line-height: 1.5; }
+    .watch-price { font-size: 26px; color: #10b981; font-weight: 800; text-shadow: 1px 1px 2px rgba(16, 185, 129, 0.2); }
+    .empty-message { text-align: center; padding: 80px 20px; color: #fff; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 16px; margin-top: 40px; }
+    .empty-message p { font-size: 20px; margin-bottom: 20px; }
+    .btn { display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 14px 32px; text-decoration: none; border-radius: 25px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6); }
   </style>
 </head>
 <body>
