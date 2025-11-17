@@ -73,7 +73,7 @@ if (!password_verify($password, $hashed)) {
     exit();
 }
 
-// Success: set session and redirect to catalog
+// Success: set session and redirect
 $_SESSION['user_id'] = $user['id'];
 $_SESSION['user_name'] = $user['name'];
 $_SESSION['user_email'] = $user['email'];
@@ -81,5 +81,10 @@ $_SESSION['user_email'] = $user['email'];
 sqlsrv_free_stmt($stmt);
 sqlsrv_close($conn);
 
-header('Location: catalog.php');
+// Redirect admin to dashboard, regular users to catalog
+if ($user['email'] === 'admin@gmail.com') {
+    header('Location: admin_dashboard.php');
+} else {
+    header('Location: catalog.php');
+}
 exit();

@@ -8,6 +8,12 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+// Check if user is admin
+if ($_SESSION['user_email'] !== 'admin@gmail.com') {
+    header('Location: catalog.php');
+    exit();
+}
+
 // DB connection
 $serverName = "tcp:mydatabase-replica.database.windows.net,1433";
 $connectionOptions = array(
