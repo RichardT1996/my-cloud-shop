@@ -15,23 +15,23 @@ if (isset($_SESSION['user_id'])) {
   <title>Login - ShopSphere</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; flex-direction: column; }
-    .header { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: #fff; padding: 30px 20px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
-    .header h1 { font-size: 2.5em; font-weight: 700; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); margin-bottom: 8px; }
-    .header p { font-size: 1.1em; opacity: 0.95; }
-    .container { max-width: 450px; margin: 60px auto; padding: 40px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.8); }
-    .form-title { text-align: center; margin-bottom: 30px; color: #2c3e50; font-size: 1.8em; font-weight: 700; }
-    .form-group { margin-bottom: 20px; }
-    label { display: block; margin-bottom: 8px; color: #2c3e50; font-weight: 600; font-size: 14px; }
-    input[type="email"], input[type="password"] { width: 100%; padding: 14px 16px; border: 2px solid #e0e0e0; border-radius: 10px; box-sizing: border-box; font-size: 15px; transition: all 0.3s ease; background: #fff; }
-    input[type="email"]:focus, input[type="password"]:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
-    .btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 14px 20px; border: none; border-radius: 10px; cursor: pointer; width: 100%; font-size: 16px; font-weight: 700; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); text-transform: uppercase; letter-spacing: 0.5px; }
-    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6); }
-    .btn:active { transform: translateY(0); }
-    .error { background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%); color: #fff; padding: 14px; border-radius: 10px; margin-bottom: 20px; font-weight: 600; box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3); }
-    .links { text-align: center; margin-top: 24px; padding-top: 20px; border-top: 1px solid #e0e0e0; }
-    .links a { color: #667eea; text-decoration: none; font-weight: 600; margin: 0 12px; transition: all 0.3s ease; }
-    .links a:hover { color: #764ba2; text-decoration: underline; }
+    body { font-family: 'Helvetica Neue', 'Arial', sans-serif; background: #0a0a0a; min-height: 100vh; display: flex; flex-direction: column; }
+    .header { background: #000; color: #fff; padding: 25px 0; text-align: center; border-bottom: 1px solid #222; }
+    .header h1 { font-size: 2em; font-weight: 300; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 5px; }
+    .header p { font-size: 0.9em; color: #999; letter-spacing: 2px; text-transform: uppercase; font-weight: 300; }
+    .container { max-width: 450px; margin: 80px auto; padding: 50px; background: #111; border: 1px solid #222; }
+    .form-title { text-align: center; margin-bottom: 40px; color: #fff; font-size: 1.5em; font-weight: 300; letter-spacing: 3px; text-transform: uppercase; }
+    .form-group { margin-bottom: 25px; }
+    label { display: block; margin-bottom: 10px; color: #999; font-weight: 300; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; }
+    input[type="email"], input[type="password"] { width: 100%; padding: 14px 0; border: none; border-bottom: 1px solid #333; box-sizing: border-box; font-size: 15px; background: transparent; color: #fff; transition: all 0.3s ease; font-weight: 300; }
+    input[type="email"]:focus, input[type="password"]:focus { outline: none; border-bottom-color: #666; }
+    input[type="email"]::placeholder, input[type="password"]::placeholder { color: #444; }
+    .btn { background: transparent; border: 1px solid #444; color: #fff; padding: 14px 20px; cursor: pointer; width: 100%; font-size: 11px; font-weight: 400; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 2px; margin-top: 10px; }
+    .btn:hover { background: #fff; color: #000; border-color: #fff; }
+    .error { background: #1a0000; border: 1px solid #330000; color: #ff6b6b; padding: 14px; margin-bottom: 25px; font-weight: 300; font-size: 13px; letter-spacing: 0.5px; }
+    .links { text-align: center; margin-top: 30px; padding-top: 30px; border-top: 1px solid #222; }
+    .links a { color: #999; text-decoration: none; font-weight: 300; margin: 0 15px; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; transition: all 0.3s ease; }
+    .links a:hover { color: #fff; }
   </style>
 </head>
 <body>
@@ -44,11 +44,11 @@ if (isset($_SESSION['user_id'])) {
     <form method="post" action="process_login.php">
       <div class="form-group">
         <label for="email">Email Address</label>
-        <input type="email" id="email" name="email" placeholder="your@email.com" required>
+        <input type="email" id="email" name="email" required>
       </div>
       <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+        <input type="password" id="password" name="password" required>
       </div>
       <div class="form-group">
         <button type="submit" class="btn">Sign In</button>
