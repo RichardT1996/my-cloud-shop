@@ -6,14 +6,19 @@ import azure.functions as func
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Login function triggered.')
+    logging.info(f'Request method: {req.method}')
+    logging.info(f'Request body: {req.get_body()}')
 
     try:
         # Parse request body
         req_body = req.get_json()
+        logging.info(f'Parsed JSON: {req_body}')
         email = req_body.get('email')
         password = req_body.get('password')
+        logging.info(f'Email: {email}, Password received: {bool(password)}')
 
         if not email or not password:
+            logging.warning('Missing email or password')
             return func.HttpResponse(
                 json.dumps({"success": False, "error": "Email and password required"}),
                 status_code=400,
@@ -21,7 +26,9 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             )
 
         # Get database connection
+        logging.info('Attempting database connection...')
         conn = get_db_connection()
+        logging.info('Database connected successfully')
         cursor = conn.cursor()
 
         # Query user
@@ -74,17 +81,24 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
 def get_db_connection():
     """Create database connection using environment variables"""
-    server = os.environ.get('DB_SERVER')
-    database = os.environ.get('DB_NAME')
-    username = os.environ.get('DB_USER')
-    password = os.environ.get('DB_PASS')
-    
-    connection_string = (
-        f'DRIVER={{ODBC Driver 18 for SQL Server}};'
-        f'SERVER={server};'
-        f'DATABASE={database};'
-        f'UID={username};'
-        f'PWD={password}'
-    )
-    
-    return pyodbc.connect(connection_string)
+    try:
+        server = os.environ.get('DB_SERVER')
+        database = os.environ.get('DB_NAME')
+        username = os.environ.get('DB_USER')
+        password = os.environ.get('DB_PASS')
+        
+        logging.info(f'DB Config - Server: {server}, Database: {database}, User: {username}')
+        
+        connection_string = (
+            f'DRIVER={{ODBC Driver 18 for SQL Server}};'
+            f'SERVER={server};'
+            f'DATABASE={database};'
+            f'UID={username};'
+            f'PWD={password}'
+        )
+        
+        logging.info('Connecting to database...')
+        return pyodbc.connect(connection_string)
+    except Exception as e:
+        logging.error(f'Database connection error: {str(e)}')
+        raise
