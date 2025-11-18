@@ -1,7 +1,7 @@
 import logging
 import json
 import os
-import pyodbc
+import pymssql
 import azure.functions as func
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
@@ -89,16 +89,20 @@ def get_db_connection():
         
         logging.info(f'DB Config - Server: {server}, Database: {database}, User: {username}')
         
-        connection_string = (
-            f'DRIVER={{ODBC Driver 18 for SQL Server}};'
-            f'SERVER={server};'
-            f'DATABASE={database};'
-            f'UID={username};'
-            f'PWD={password}'
-        )
+        # Extract just the server address (remove tcp: and port if present)
+        server_address = server.replace('tcp:', '').split(',')[0]
+        port = 1433
+        if ',' in server:
+            port = int(server.split(',')[1])
         
-        logging.info('Connecting to database...')
-        return pyodbc.connect(connection_string)
+        logging.info(f'Connecting to {server_address}:{port}...')
+        return pymssql.connect(
+            server=server_address,
+            port=port,
+            user=username,
+            password=password,
+            database=database
+        )
     except Exception as e:
         logging.error(f'Database connection error: {str(e)}')
         raise
