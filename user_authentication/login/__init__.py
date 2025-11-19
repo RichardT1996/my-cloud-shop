@@ -7,12 +7,12 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Login function triggered')
     
     try:
-        # Try to import pyodbc
+        # Try to import pymssql
         try:
-            import pyodbc
-            logging.info('pyodbc imported successfully')
+            import pymssql
+            logging.info('pymssql imported successfully')
         except Exception as e:
-            logging.error(f'Failed to import pyodbc: {str(e)}')
+            logging.error(f'Failed to import pymssql: {str(e)}')
             return func.HttpResponse(
                 json.dumps({"success": False, "error": f"Database driver error: {str(e)}"}),
                 status_code=500,
@@ -91,22 +91,21 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
 def get_db_connection():
     """Create database connection"""
-    import pyodbc
+    import pymssql
     
     server = os.environ.get('DB_SERVER')
     database = os.environ.get('DB_NAME')
     username = os.environ.get('DB_USER')
     password = os.environ.get('DB_PASS')
     
-    logging.info(f'Connecting to: {server}, database: {database}, user: {username}')
+    # Remove 'tcp:' prefix and ',1433' suffix from server string
+    server_clean = server.replace('tcp:', '').replace(',1433', '')
     
-    # Use ODBC Driver 17 (available in Azure Functions)
-    connection_string = (
-        f'DRIVER={{ODBC Driver 17 for SQL Server}};'
-        f'SERVER={server};'
-        f'DATABASE={database};'
-        f'UID={username};'
-        f'PWD={password}'
+    logging.info(f'Connecting to: {server_clean}, database: {database}, user: {username}')
+    
+    return pymssql.connect(
+        server=server_clean,
+        user=username,
+        password=password,
+        database=database
     )
-    
-    return pyodbc.connect(connection_string)
