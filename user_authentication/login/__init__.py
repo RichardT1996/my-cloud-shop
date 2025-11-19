@@ -1,13 +1,24 @@
 import logging
 import json
 import os
-import pyodbc
 import azure.functions as func
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Login function triggered')
     
     try:
+        # Try to import pyodbc
+        try:
+            import pyodbc
+            logging.info('pyodbc imported successfully')
+        except Exception as e:
+            logging.error(f'Failed to import pyodbc: {str(e)}')
+            return func.HttpResponse(
+                json.dumps({"success": False, "error": f"Database driver error: {str(e)}"}),
+                status_code=500,
+                mimetype="application/json"
+            )
+        
         req_body = req.get_json()
         email = req_body.get('email')
         password = req_body.get('password')
@@ -22,7 +33,17 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         logging.info(f'Attempting login for: {email}')
         
         # Connect to database
-        conn = get_db_connection()
+        try:
+            conn = get_db_connection()
+            logging.info('Database connection established')
+        except Exception as e:
+            logging.error(f'Database connection failed: {str(e)}')
+            return func.HttpResponse(
+                json.dumps({"success": False, "error": f"Database connection error: {str(e)}"}),
+                status_code=500,
+                mimetype="application/json"
+            )
+        
         cursor = conn.cursor()
         
         # Query user
@@ -70,10 +91,14 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
 def get_db_connection():
     """Create database connection"""
+    import pyodbc
+    
     server = os.environ.get('DB_SERVER')
     database = os.environ.get('DB_NAME')
     username = os.environ.get('DB_USER')
     password = os.environ.get('DB_PASS')
+    
+    logging.info(f'Connecting to: {server}, database: {database}, user: {username}')
     
     # Use ODBC Driver 17 (available in Azure Functions)
     connection_string = (
