@@ -56,7 +56,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         # Query wishlist with watch details
         cursor.execute("""
             SELECT w.id, w.user_id, w.watch_id, w.added_at,
-                   wt.name, wt.brand, wt.price, wt.image
+                   wt.name, wt.brand, wt.price, wt.image_url
             FROM wishlist w
             INNER JOIN watches wt ON w.watch_id = wt.id
             WHERE w.user_id = ?
@@ -73,7 +73,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 "name": row[4],
                 "brand": row[5],
                 "price": float(row[6]) if row[6] else 0,
-                "image": row[7]
+                "image_url": row[7]
             })
         
         conn.close()
