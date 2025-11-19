@@ -81,46 +81,30 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         )
 
 def get_db_connection():
-    """Create database connection using pyodbc with proper Azure configuration"""
-    try:
-        import pyodbc
-    except ImportError:
-        logging.error("pyodbc not available, using struct-based workaround")
-        # If pyodbc isn't available, we'll need to install it via Oryx build
-        raise Exception("Database driver not available. Please check Oryx build logs.")
+    """Create database connection using pyodbc"""
+    import pyodbc
     
-    server = os.environ.get('DB_SERVER')
-    database = os.environ.get('DB_NAME')
-    username = os.environ.get('DB_USER')
-    password = os.environ.get('DB_PASS')
+    server = os.environ.get('DB_SERVER', '')
+    database = os.environ.get('DB_NAME', '')
+    username = os.environ.get('DB_USER', '')
+    password = os.environ.get('DB_PASS', '')
     
-    # Remove 'tcp:' prefix and ',1433' suffix from server string
-    server_clean = server.replace('tcp:', '').replace(',1433', '')
+    # Azure SQL connection string format
+    # Server is typically: mycardiffmet1.database.windows.net
+    server_clean = server.replace('tcp:', '').replace(',1433', '').strip()
     
-    logging.info(f'Connecting to: {server_clean}, database: {database}')
+    logging.info(f'Connecting to server: {server_clean}')
     
-    # Try ODBC Driver 18 first (newer), then fall back to 17
-    drivers = ['ODBC Driver 18 for SQL Server', 'ODBC Driver 17 for SQL Server']
+    # Use ODBC Driver 18 with TrustServerCertificate=yes for Azure SQL
+    connection_string = (
+        'DRIVER={ODBC Driver 18 for SQL Server};'
+        f'SERVER={server_clean};'
+        f'DATABASE={database};'
+        f'UID={username};'
+        f'PWD={password};'
+        'Encrypt=yes;'
+        'TrustServerCertificate=yes;'
+        'Connection Timeout=30;'
+    )
     
-    for driver in drivers:
-        try:
-            connection_string = (
-                f'DRIVER={{{driver}}};'
-                f'SERVER={server_clean};'
-                f'DATABASE={database};'
-                f'UID={username};'
-                f'PWD={password};'
-                f'Encrypt=yes;'
-                f'TrustServerCertificate=no;'
-                f'Connection Timeout=30;'
-            )
-            
-            logging.info(f'Trying driver: {driver}')
-            conn = pyodbc.connect(connection_string)
-            logging.info(f'Connected successfully with {driver}')
-            return conn
-        except Exception as e:
-            logging.warning(f'Failed with {driver}: {str(e)}')
-            continue
-    
-    raise Exception("Could not connect with any available ODBC driver")
+    return pyodbc.connect(connection_string)
