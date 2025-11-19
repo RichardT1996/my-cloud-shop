@@ -8,9 +8,10 @@
       "name": "req",
       "methods": [
         "post",
-        "delete"
+        "delete",
+        "options"
       ],
-      "route": "wishlist/remove"
+      "route": "remove_from_wishlist"
     },
     {
       "type": "http",

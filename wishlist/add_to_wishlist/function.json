@@ -7,9 +7,10 @@
       "direction": "in",
       "name": "req",
       "methods": [
-        "post"
+        "post",
+        "options"
       ],
-      "route": "wishlist/add"
+      "route": "add_to_wishlist"
     },
     {
       "type": "http",
