@@ -105,6 +105,7 @@ sqlsrv_close($conn);
     </div>
     <div>
       <a href="index.php" style="background:#3498db; margin-right:8px;">Home</a>
+      <a href="wishlist.php" style="background:#e74c3c; margin-right:8px;">💝 My Wishlist</a>
       <?php if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@gmail.com'): ?>
         <a href="admin_dashboard.php">Manage Products</a>
       <?php endif; ?>
@@ -144,12 +145,41 @@ sqlsrv_close($conn);
               <div class="watch-price">£<?php echo number_format($watch['price'], 0); ?></div>
             </div>
             <div class="watch-card-footer">
-              <a href="#" class="enquire-btn">Enquire Now</a>
+              <button class="enquire-btn" onclick="addToWishlist(<?php echo $watch['id']; ?>)" style="border:none;cursor:pointer;">
+                ❤️ Add to Wishlist
+              </button>
+              <a href="#" class="enquire-btn" style="background:#3498db;margin-left:10px;">Enquire Now</a>
             </div>
           </div>
         <?php endforeach; ?>
       </div>
     <?php endif; ?>
   </div>
+  
+  <script>
+    async function addToWishlist(watchId) {
+      try {
+        const response = await fetch('api_wishlist.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ watch_id: watchId })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          alert('✓ ' + data.message);
+        } else {
+          alert('✗ ' + (data.error || 'Failed to add to wishlist'));
+        }
+        
+      } catch (error) {
+        alert('✗ Error adding to wishlist');
+        console.error(error);
+      }
+    }
+  </script>
 </body>
 </html>
