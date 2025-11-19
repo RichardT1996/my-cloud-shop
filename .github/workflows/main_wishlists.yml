@@ -90,7 +90,7 @@ jobs:
         uses: Azure/functions-action@v1
         id: deploy-to-function
         with:
-          app-name: 'wishlists-bvgrckbzfmf2gzd9'
+          app-name: 'Wishlists'
           slot-name: 'Production'
           package: .
           scm-do-build-during-deployment: false
