@@ -35,7 +35,7 @@ jobs:
           python -m venv venv
           source venv/bin/activate
 
-      - name: Install dependencies
+      - name: Install dependencies  
         working-directory: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
         run: |
           python -m pip install --upgrade pip
@@ -46,7 +46,7 @@ jobs:
 
       - name: Zip artifact for deployment
         working-directory: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-        run: zip release.zip ./* -r -x "venv/*" -x "__pycache__/*" -x "*.pyc"
+        run: zip -r release.zip . -x "venv/*" "__pycache__/*" "*.pyc"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -86,6 +86,6 @@ jobs:
           app-name: 'User-Authentication'
           slot-name: 'Production'
           package: .
-          scm-do-build-during-deployment: true
-          enable-oryx-build: true
+          scm-do-build-during-deployment: false
+          enable-oryx-build: false
           
