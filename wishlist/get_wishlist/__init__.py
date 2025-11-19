@@ -24,7 +24,12 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                     "error": "user_id required"
                 }),
                 status_code=400,
-                mimetype="application/json"
+                mimetype="application/json",
+                headers={
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "GET, OPTIONS",
+                    "Access-Control-Allow-Headers": "Content-Type"
+                }
             )
         
         logging.info(f'Retrieving wishlist for user: {user_id}')
@@ -38,7 +43,12 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             return func.HttpResponse(
                 json.dumps({"success": False, "error": f"Database connection error: {str(e)}"}),
                 status_code=500,
-                mimetype="application/json"
+                mimetype="application/json",
+                headers={
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "GET, OPTIONS",
+                    "Access-Control-Allow-Headers": "Content-Type"
+                }
             )
         
         cursor = conn.cursor()
@@ -77,7 +87,12 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 "items": items
             }),
             status_code=200,
-            mimetype="application/json"
+            mimetype="application/json",
+            headers={
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type"
+            }
         )
         
     except Exception as e:
@@ -90,7 +105,12 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 "error": str(e)
             }),
             status_code=500,
-            mimetype="application/json"
+            mimetype="application/json",
+            headers={
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type"
+            }
         )
 
 def get_db_connection():

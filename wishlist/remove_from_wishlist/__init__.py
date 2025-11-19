@@ -18,7 +18,12 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                     "error": "user_id and watch_id required"
                 }),
                 status_code=400,
-                mimetype="application/json"
+                mimetype="application/json",
+                headers={
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "POST, OPTIONS",
+                    "Access-Control-Allow-Headers": "Content-Type"
+                }
             )
         
         logging.info(f'Removing watch {watch_id} from wishlist for user {user_id}')
@@ -32,7 +37,12 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             return func.HttpResponse(
                 json.dumps({"success": False, "error": f"Database connection error: {str(e)}"}),
                 status_code=500,
-                mimetype="application/json"
+                mimetype="application/json",
+                headers={
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "POST, OPTIONS",
+                    "Access-Control-Allow-Headers": "Content-Type"
+                }
             )
         
         cursor = conn.cursor()
@@ -55,7 +65,12 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                     "error": "Item not found in wishlist"
                 }),
                 status_code=404,
-                mimetype="application/json"
+                mimetype="application/json",
+                headers={
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "POST, OPTIONS",
+                    "Access-Control-Allow-Headers": "Content-Type"
+                }
             )
         
         logging.info(f'Successfully removed watch {watch_id} from wishlist for user {user_id}')
@@ -68,7 +83,12 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 "watch_id": watch_id
             }),
             status_code=200,
-            mimetype="application/json"
+            mimetype="application/json",
+            headers={
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "POST, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type"
+            }
         )
         
     except ValueError:
@@ -78,7 +98,12 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 "error": "Invalid JSON body"
             }),
             status_code=400,
-            mimetype="application/json"
+            mimetype="application/json",
+            headers={
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "POST, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type"
+            }
         )
     except Exception as e:
         logging.error(f'Error: {str(e)}')
@@ -90,7 +115,12 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 "error": str(e)
             }),
             status_code=500,
-            mimetype="application/json"
+            mimetype="application/json",
+            headers={
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "POST, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type"
+            }
         )
 
 def get_db_connection():
