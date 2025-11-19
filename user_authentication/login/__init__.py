@@ -1,24 +1,13 @@
 import logging
 import json
 import os
+import struct
 import azure.functions as func
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Login function triggered')
     
     try:
-        # Try to import pymssql
-        try:
-            import pymssql
-            logging.info('pymssql imported successfully')
-        except Exception as e:
-            logging.error(f'Failed to import pymssql: {str(e)}')
-            return func.HttpResponse(
-                json.dumps({"success": False, "error": f"Database driver error: {str(e)}"}),
-                status_code=500,
-                mimetype="application/json"
-            )
-        
         req_body = req.get_json()
         email = req_body.get('email')
         password = req_body.get('password')
@@ -83,15 +72,22 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         
     except Exception as e:
         logging.error(f'Error: {str(e)}')
+        import traceback
+        logging.error(traceback.format_exc())
         return func.HttpResponse(
-            json.dumps({"success": False, "error": "Internal server error"}),
+            json.dumps({"success": False, "error": str(e)}),
             status_code=500,
             mimetype="application/json"
         )
 
 def get_db_connection():
-    """Create database connection"""
-    import pymssql
+    """Create database connection using pyodbc with proper Azure configuration"""
+    try:
+        import pyodbc
+    except ImportError:
+        logging.error("pyodbc not available, using struct-based workaround")
+        # If pyodbc isn't available, we'll need to install it via Oryx build
+        raise Exception("Database driver not available. Please check Oryx build logs.")
     
     server = os.environ.get('DB_SERVER')
     database = os.environ.get('DB_NAME')
@@ -101,11 +97,30 @@ def get_db_connection():
     # Remove 'tcp:' prefix and ',1433' suffix from server string
     server_clean = server.replace('tcp:', '').replace(',1433', '')
     
-    logging.info(f'Connecting to: {server_clean}, database: {database}, user: {username}')
+    logging.info(f'Connecting to: {server_clean}, database: {database}')
     
-    return pymssql.connect(
-        server=server_clean,
-        user=username,
-        password=password,
-        database=database
-    )
+    # Try ODBC Driver 18 first (newer), then fall back to 17
+    drivers = ['ODBC Driver 18 for SQL Server', 'ODBC Driver 17 for SQL Server']
+    
+    for driver in drivers:
+        try:
+            connection_string = (
+                f'DRIVER={{{driver}}};'
+                f'SERVER={server_clean};'
+                f'DATABASE={database};'
+                f'UID={username};'
+                f'PWD={password};'
+                f'Encrypt=yes;'
+                f'TrustServerCertificate=no;'
+                f'Connection Timeout=30;'
+            )
+            
+            logging.info(f'Trying driver: {driver}')
+            conn = pyodbc.connect(connection_string)
+            logging.info(f'Connected successfully with {driver}')
+            return conn
+        except Exception as e:
+            logging.warning(f'Failed with {driver}: {str(e)}')
+            continue
+    
+    raise Exception("Could not connect with any available ODBC driver")
