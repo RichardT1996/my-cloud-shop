@@ -114,6 +114,7 @@ sqlsrv_close($conn);
 }
 
 // API call succeeded - parse response
+error_log("✓ Auth API success: HTTP $httpCode - Using Azure Function for authentication");
 $apiResponse = json_decode($response, true);
 
 if (!$apiResponse || !isset($apiResponse['success']) || !$apiResponse['success']) {
