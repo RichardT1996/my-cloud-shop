@@ -87,7 +87,8 @@ $user_name = $_SESSION['user_name'] ?? 'User';
         
         async function loadWishlist() {
             try {
-                const response = await fetch('api_wishlist.php');
+                const userId = <?php echo $_SESSION['user_id']; ?>;
+                const response = await fetch(`https://wishlists-bvgrckbzfmf2gzd9.norwayeast-01.azurewebsites.net/api/get_wishlist?user_id=${userId}`);
                 const data = await response.json();
                 
                 document.getElementById('loading').style.display = 'none';
@@ -97,7 +98,7 @@ $user_name = $_SESSION['user_name'] ?? 'User';
                     return;
                 }
                 
-                displayWishlist(data.items, data.count);
+                displayWishlist(data.items, data.items.length);
                 
             } catch (error) {
                 document.getElementById('loading').style.display = 'none';
@@ -168,12 +169,16 @@ $user_name = $_SESSION['user_name'] ?? 'User';
             }
             
             try {
-                const response = await fetch('api_wishlist.php', {
-                    method: 'DELETE',
+                const userId = <?php echo $_SESSION['user_id']; ?>;
+                const response = await fetch('https://wishlists-bvgrckbzfmf2gzd9.norwayeast-01.azurewebsites.net/api/remove_from_wishlist', {
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ watch_id: watchId })
+                    body: JSON.stringify({ 
+                        user_id: userId,
+                        watch_id: watchId 
+                    })
                 });
                 
                 const data = await response.json();

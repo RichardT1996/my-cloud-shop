@@ -159,12 +159,15 @@ sqlsrv_close($conn);
   <script>
     async function addToWishlist(watchId) {
       try {
-        const response = await fetch('api_wishlist.php', {
+        const response = await fetch('https://wishlists-bvgrckbzfmf2gzd9.norwayeast-01.azurewebsites.net/api/add_to_wishlist', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ watch_id: watchId })
+          body: JSON.stringify({ 
+            user_id: <?php echo $_SESSION['user_id']; ?>,
+            watch_id: watchId 
+          })
         });
         
         const data = await response.json();
