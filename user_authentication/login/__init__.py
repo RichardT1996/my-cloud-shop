@@ -1,11 +1,22 @@
 import logging
 import json
 import os
-import pymssql
 import azure.functions as func
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Login function triggered.')
+    
+    try:
+        import pymssql
+        logging.info('pymssql imported successfully')
+    except Exception as e:
+        logging.error(f'Failed to import pymssql: {str(e)}')
+        return func.HttpResponse(
+            json.dumps({"success": False, "error": f"Import error: {str(e)}"}),
+            status_code=500,
+            mimetype="application/json"
+        )
+    
     logging.info(f'Request method: {req.method}')
     logging.info(f'Request body: {req.get_body()}')
 
