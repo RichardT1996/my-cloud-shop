@@ -16,206 +16,64 @@ $user_name = $_SESSION['user_name'] ?? 'User';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Wishlist - Luxury Watch Shop</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .header {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .header h1 {
-            color: #333;
-            font-size: 28px;
-        }
-        
-        .header-right {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-        
-        .user-info {
-            color: #666;
-        }
-        
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-        
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: #5568d3;
-        }
-        
-        .btn-danger {
-            background: #e74c3c;
-            color: white;
-        }
-        
-        .btn-danger:hover {
-            background: #c0392b;
-        }
-        
-        .btn-secondary {
-            background: #95a5a6;
-            color: white;
-        }
-        
-        .btn-secondary:hover {
-            background: #7f8c8d;
-        }
-        
-        .wishlist-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        
-        .watch-card {
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        
-        .watch-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-        }
-        
-        .watch-image {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-            background: #f0f0f0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #999;
-        }
-        
-        .watch-content {
-            padding: 20px;
-        }
-        
-        .watch-brand {
-            color: #667eea;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .watch-name {
-            font-size: 20px;
-            font-weight: 600;
-            color: #333;
-            margin: 10px 0;
-        }
-        
-        .watch-price {
-            font-size: 24px;
-            color: #27ae60;
-            font-weight: 700;
-            margin: 10px 0;
-        }
-        
-        .watch-description {
-            color: #666;
-            font-size: 14px;
-            line-height: 1.5;
-            margin-bottom: 15px;
-        }
-        
-        .watch-meta {
-            font-size: 12px;
-            color: #999;
-            margin-bottom: 15px;
-        }
-        
-        .card-actions {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .empty-state {
-            background: white;
-            padding: 60px 20px;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .empty-state h2 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-        
-        .empty-state p {
-            color: #666;
-            margin-bottom: 20px;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: white;
-            font-size: 18px;
-        }
-        
-        .error-message {
-            background: #e74c3c;
-            color: white;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Helvetica Neue', 'Arial', sans-serif; background: #0a0a0a; color: #f5f5f5; min-height: 100vh; }
+        .header { background: #000; color: #fff; padding: 25px 0; text-align: center; border-bottom: 1px solid #222; }
+        .header h1 { font-size: 2em; font-weight: 300; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 5px; }
+        .header p { font-size: 0.9em; color: #999; letter-spacing: 2px; text-transform: uppercase; font-weight: 300; }
+        .user-bar { background: #111; color: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; }
+        .user-bar .user-info { font-size: 13px; color: #999; font-weight: 300; }
+        .user-bar .user-info strong { color: #fff; font-weight: 400; }
+        .user-bar a { color: #fff; text-decoration: none; padding: 8px 20px; background: transparent; border: 1px solid #444; border-radius: 0; font-size: 12px; font-weight: 400; transition: all 0.3s ease; margin-left: 10px; letter-spacing: 1px; text-transform: uppercase; }
+        .user-bar a:hover { background: #fff; color: #000; border-color: #fff; }
+        .container { max-width: 1400px; margin: 60px auto; padding: 0 40px; }
+        .catalog-header { text-align: center; margin-bottom: 60px; padding-bottom: 30px; border-bottom: 1px solid #222; }
+        .catalog-header h2 { color: #fff; margin-bottom: 15px; font-size: 2.5em; font-weight: 300; letter-spacing: 3px; text-transform: uppercase; }
+        .catalog-header p { color: #888; font-size: 1em; letter-spacing: 1px; font-weight: 300; }
+        .wishlist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 40px; }
+        .watch-card { background: #111; border: 1px solid #222; overflow: hidden; transition: all 0.4s ease; }
+        .watch-card:hover { border-color: #444; transform: translateY(-5px); box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        .watch-image-container { width: 100%; height: 350px; background: #1a1a1a; display: flex; align-items: center; justify-content: center; padding: 40px; border-bottom: 1px solid #222; }
+        .watch-image { max-width: 90%; max-height: 90%; object-fit: contain; filter: brightness(1.05) contrast(1.1); }
+        .watch-content { padding: 30px; background: #111; }
+        .watch-brand { color: #888; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; font-weight: 400; }
+        .watch-name { font-size: 18px; color: #fff; margin-bottom: 15px; font-weight: 400; line-height: 1.4; letter-spacing: 0.5px; }
+        .watch-description { color: #666; font-size: 13px; margin-bottom: 20px; line-height: 1.6; font-weight: 300; }
+        .watch-price { font-size: 20px; color: #fff; font-weight: 300; letter-spacing: 1px; margin-bottom: 15px; }
+        .watch-meta { font-size: 11px; color: #555; margin-bottom: 15px; letter-spacing: 1px; }
+        .card-actions { display: flex; gap: 10px; }
+        .btn { display: inline-block; padding: 12px 30px; background: transparent; border: 1px solid #444; color: #fff; text-decoration: none; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s ease; font-weight: 400; cursor: pointer; text-align: center; }
+        .btn:hover { background: #fff; color: #000; border-color: #fff; }
+        .btn-danger { border-color: #c0392b; color: #c0392b; }
+        .btn-danger:hover { background: #c0392b; color: #fff; border-color: #c0392b; }
+        .empty-state { text-align: center; padding: 100px 20px; color: #666; background: #111; border: 1px solid #222; margin-top: 40px; }
+        .empty-state h2 { color: #fff; margin-bottom: 15px; font-weight: 300; letter-spacing: 2px; }
+        .empty-state p { font-size: 14px; margin-bottom: 30px; font-weight: 300; letter-spacing: 1px; color: #888; }
+        .loading { text-align: center; padding: 40px; color: #888; font-size: 14px; letter-spacing: 1px; }
+        .error-message { background: #c0392b; color: white; padding: 15px 30px; margin-bottom: 20px; font-size: 13px; letter-spacing: 1px; border: 1px solid #a93226; }
     </style>
 </head>
 <body>
+    <div class="header">
+        <h1>ShopSphere</h1>
+        <p>My Wishlist</p>
+    </div>
+    
+    <div class="user-bar">
+        <div class="user-info">
+            Welcome, <strong><?php echo htmlspecialchars($user_name); ?></strong>
+        </div>
+        <div>
+            <a href="index.php">Home</a>
+            <a href="catalog.php">Browse Watches</a>
+            <a href="logout.php">Log Out</a>
+        </div>
+    </div>
+    
     <div class="container">
-        <div class="header">
-            <h1>💝 My Wishlist</h1>
-            <div class="header-right">
-                <span class="user-info">Welcome, <?php echo htmlspecialchars($user_name); ?></span>
-                <a href="catalog.php" class="btn btn-primary">Browse Watches</a>
-                <a href="logout.php" class="btn btn-secondary">Logout</a>
-            </div>
+        <div class="catalog-header">
+            <h2>My Wishlist</h2>
+            <p>Your curated collection of luxury timepieces</p>
         </div>
         
         <div id="error-container"></div>
@@ -255,8 +113,8 @@ $user_name = $_SESSION['user_name'] ?? 'User';
                 container.innerHTML = `
                     <div class="empty-state">
                         <h2>Your wishlist is empty</h2>
-                        <p>Browse our collection and add watches you love!</p>
-                        <a href="catalog.php" class="btn btn-primary">Browse Watches</a>
+                        <p>Browse our collection and add watches you love</p>
+                        <a href="catalog.php" class="btn">Browse Watches</a>
                     </div>
                 `;
                 return;
@@ -278,24 +136,24 @@ $user_name = $_SESSION['user_name'] ?? 'User';
             card.className = 'watch-card';
             
             const addedDate = new Date(item.added_at).toLocaleDateString();
-            const price = parseFloat(item.price).toLocaleString('en-US', { 
+            const price = parseFloat(item.price).toLocaleString('en-GB', { 
                 style: 'currency', 
-                currency: 'USD' 
+                currency: 'GBP' 
             });
             
             card.innerHTML = `
-                <div class="watch-image">
-                    ${item.image_url ? `<img src="${item.image_url}" alt="${item.name}" style="width:100%;height:100%;object-fit:cover;">` : '📷 No Image'}
+                <div class="watch-image-container">
+                    ${item.image_url ? `<img src="${item.image_url}" alt="${item.name}" class="watch-image">` : '<div style="color:#666;">No Image</div>'}
                 </div>
                 <div class="watch-content">
                     <div class="watch-brand">${item.brand}</div>
                     <div class="watch-name">${item.name}</div>
-                    <div class="watch-price">${price}</div>
+                    <div class="watch-price">£${parseFloat(item.price).toLocaleString('en-GB', {minimumFractionDigits: 0})}</div>
                     <div class="watch-description">${item.description || ''}</div>
-                    <div class="watch-meta">Added on ${addedDate}</div>
+                    <div class="watch-meta">Added ${addedDate}</div>
                     <div class="card-actions">
                         <button class="btn btn-danger" onclick="removeFromWishlist(${item.watch_id})">
-                            Remove
+                            Remove from Wishlist
                         </button>
                     </div>
                 </div>
