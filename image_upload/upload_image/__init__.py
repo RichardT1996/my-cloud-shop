@@ -34,9 +34,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         
         logging.info(f'Uploading image: {original_filename}')
         
-        # Generate unique filename
-        file_extension = original_filename.split('.')[-1] if '.' in original_filename else 'jpg'
-        unique_filename = f"{uuid.uuid4().hex}_{datetime.now().strftime('%Y%m%d%H%M%S')}.{file_extension}"
+        # Use original filename
+        unique_filename = original_filename
         
         # Decode base64 image
         try:
