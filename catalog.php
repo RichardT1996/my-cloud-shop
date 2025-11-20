@@ -145,7 +145,7 @@ sqlsrv_close($conn);
               <div class="watch-price">£<?php echo number_format($watch['price'], 0); ?></div>
             </div>
             <div class="watch-card-footer">
-              <button class="enquire-btn" onclick="addToWishlist(<?php echo $watch['id']; ?>)" style="border:none;cursor:pointer;">
+              <button class="enquire-btn wishlist-btn" data-watch-id="<?php echo $watch['id']; ?>" onclick="addToWishlist(<?php echo $watch['id']; ?>, this)" style="border:none;cursor:pointer;">
                 ❤️ Add to Wishlist
               </button>
               <a href="#" class="enquire-btn" style="background:#3498db;margin-left:10px;">Enquire Now</a>
@@ -157,7 +157,34 @@ sqlsrv_close($conn);
   </div>
   
   <script>
-    async function addToWishlist(watchId) {
+    // Load user's wishlist on page load to mark items already in wishlist
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const userId = <?php echo $_SESSION['user_id']; ?>;
+        const response = await fetch(`https://wishlists-bvgrckbzfmf2gzd9.norwayeast-01.azurewebsites.net/api/get_wishlist?user_id=${userId}`);
+        const data = await response.json();
+        
+        if (data.success && data.items) {
+          const wishlistWatchIds = data.items.map(item => item.watch_id);
+          
+          // Update buttons for items already in wishlist
+          document.querySelectorAll('.wishlist-btn').forEach(btn => {
+            const watchId = parseInt(btn.getAttribute('data-watch-id'));
+            if (wishlistWatchIds.includes(watchId)) {
+              btn.innerHTML = '✓ In Wishlist';
+              btn.style.background = '#27ae60';
+              btn.style.borderColor = '#27ae60';
+              btn.disabled = true;
+              btn.style.cursor = 'not-allowed';
+            }
+          });
+        }
+      } catch (error) {
+        console.error('Error loading wishlist status:', error);
+      }
+    });
+    
+    async function addToWishlist(watchId, buttonElement) {
       try {
         const response = await fetch('https://wishlists-bvgrckbzfmf2gzd9.norwayeast-01.azurewebsites.net/api/add_to_wishlist', {
           method: 'POST',
@@ -173,6 +200,12 @@ sqlsrv_close($conn);
         const data = await response.json();
         
         if (data.success) {
+          // Update button state
+          buttonElement.innerHTML = '✓ In Wishlist';
+          buttonElement.style.background = '#27ae60';
+          buttonElement.style.borderColor = '#27ae60';
+          buttonElement.disabled = true;
+          buttonElement.style.cursor = 'not-allowed';
           alert('✓ ' + data.message);
         } else {
           alert('✗ ' + (data.error || 'Failed to add to wishlist'));
