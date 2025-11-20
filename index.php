@@ -54,10 +54,17 @@ session_start();
         Welcome, <strong><?php echo htmlspecialchars($_SESSION['user_name']); ?></strong>
       </div>
       <div>
-        <a href="catalog.php">Browse All Watches</a>
-        <a href="wishlist.php">My Wishlist</a>
-        <a href="cart.php">🛒 Cart</a>
-        <a href="my_orders.php">My Orders</a>
+        <?php if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@gmail.com'): ?>
+          <a href="catalog.php">Catalog</a>
+          <a href="admin_dashboard.php">Manage Products</a>
+          <a href="view_users.php">Users</a>
+          <a href="admin_orders.php">Orders</a>
+        <?php else: ?>
+          <a href="catalog.php">Browse All Watches</a>
+          <a href="wishlist.php">My Wishlist</a>
+          <a href="cart.php">🛒 Cart</a>
+          <a href="my_orders.php">My Orders</a>
+        <?php endif; ?>
         <a href="logout.php">Log Out</a>
       </div>
     </div>
