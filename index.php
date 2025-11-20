@@ -6,57 +6,122 @@ session_start();
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ShopSphere - Welcome</title>
+  <title>ShopSphere - Premium Watch Collection</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
-    .header { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: #fff; padding: 40px 20px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
-    .header h1 { font-size: 3em; font-weight: 700; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); margin-bottom: 10px; }
-    .header p { font-size: 1.2em; opacity: 0.95; }
-    .container { max-width: 1200px; margin: 0 auto; padding: 60px 20px; }
-    .user-info { text-align: center; padding: 20px 30px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); margin-bottom: 30px; border-radius: 15px; color: #2c3e50; font-size: 1.1em; box-shadow: 0 8px 24px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.8); }
-    .user-info strong { color: #667eea; font-size: 1.2em; }
-    .welcome-text { text-align: center; margin: 40px 0; color: #fff; }
-    .welcome-text h2 { font-size: 2.5em; margin-bottom: 15px; font-weight: 700; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
-    .welcome-text > p { font-size: 1.3em; margin-bottom: 40px; opacity: 0.95; }
-    .actions { text-align: center; margin-top: 30px; display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; }
-    .btn { display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 16px 40px; text-decoration: none; border-radius: 30px; font-size: 18px; font-weight: 700; transition: all 0.3s ease; box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4); text-transform: uppercase; letter-spacing: 0.5px; }
-    .btn:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(102, 126, 234, 0.6); }
-    .btn-logout { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); box-shadow: 0 8px 20px rgba(245, 87, 108, 0.4); }
-    .btn-logout:hover { box-shadow: 0 12px 30px rgba(245, 87, 108, 0.6); }
-    .btn-secondary { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); box-shadow: 0 8px 20px rgba(79, 172, 254, 0.4); }
-    .btn-secondary:hover { box-shadow: 0 12px 30px rgba(79, 172, 254, 0.6); }
+    body { font-family: 'Helvetica Neue', 'Arial', sans-serif; background: #0a0a0a; color: #f5f5f5; }
+    .header { background: #000; color: #fff; padding: 50px 0; text-align: center; border-bottom: 1px solid #222; }
+    .header h1 { font-size: 3em; font-weight: 300; letter-spacing: 8px; text-transform: uppercase; margin-bottom: 10px; }
+    .header p { font-size: 1em; color: #999; letter-spacing: 3px; text-transform: uppercase; font-weight: 300; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 80px 40px; }
+    .hero { text-align: center; margin-bottom: 100px; padding: 60px 0; border-bottom: 1px solid #222; }
+    .hero h2 { font-size: 2.5em; color: #fff; margin-bottom: 20px; font-weight: 300; letter-spacing: 4px; line-height: 1.4; }
+    .hero p { font-size: 1.1em; color: #888; margin-bottom: 40px; font-weight: 300; letter-spacing: 1px; line-height: 1.8; max-width: 800px; margin-left: auto; margin-right: auto; }
+    .cta-buttons { display: flex; justify-content: center; gap: 20px; margin-top: 40px; flex-wrap: wrap; }
+    .btn { display: inline-block; padding: 15px 40px; background: transparent; border: 1px solid #444; color: #fff; text-decoration: none; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s ease; font-weight: 400; }
+    .btn:hover { background: #fff; color: #000; border-color: #fff; }
+    .btn-primary { border-color: #fff; }
+    .featured { margin-top: 80px; }
+    .featured h3 { text-align: center; font-size: 1.8em; color: #fff; margin-bottom: 50px; font-weight: 300; letter-spacing: 3px; text-transform: uppercase; }
+    .watch-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 50px; }
+    .watch-card { background: #111; border: 1px solid #222; overflow: hidden; transition: all 0.4s ease; }
+    .watch-card:hover { border-color: #444; transform: translateY(-5px); box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+    .watch-image-container { width: 100%; height: 400px; background: #1a1a1a; display: flex; align-items: center; justify-content: center; padding: 50px; border-bottom: 1px solid #222; }
+    .watch-image { max-width: 85%; max-height: 85%; object-fit: contain; filter: brightness(1.05) contrast(1.1); }
+    .watch-info { padding: 35px; }
+    .watch-brand { color: #888; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; font-weight: 400; }
+    .watch-name { font-size: 20px; color: #fff; margin-bottom: 15px; font-weight: 400; letter-spacing: 0.5px; }
+    .watch-price { font-size: 22px; color: #fff; font-weight: 300; letter-spacing: 1px; margin-top: 20px; }
+    .login-prompt { text-align: center; padding: 40px; background: #111; border: 1px solid #222; margin-top: 60px; }
+    .login-prompt h4 { color: #fff; font-size: 1.3em; margin-bottom: 15px; font-weight: 300; letter-spacing: 2px; }
+    .login-prompt p { color: #888; margin-bottom: 30px; font-weight: 300; letter-spacing: 1px; }
+    .user-bar { background: #111; color: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; }
+    .user-bar .user-info { font-size: 13px; color: #999; font-weight: 300; }
+    .user-bar .user-info strong { color: #fff; font-weight: 400; }
+    .user-bar a { color: #fff; text-decoration: none; padding: 8px 20px; background: transparent; border: 1px solid #444; font-size: 12px; font-weight: 400; transition: all 0.3s ease; margin-left: 10px; letter-spacing: 1px; text-transform: uppercase; }
+    .user-bar a:hover { background: #fff; color: #000; border-color: #fff; }
   </style>
 </head>
 <body>
   <div class="header">
-    <div class="container">
-      <h1>ShopSphere</h1>
-      <p>Your one-stop destination for amazing products</p>
-    </div>
+    <h1>ShopSphere</h1>
+    <p>Luxury Timepieces</p>
   </div>
 
-  <div class="container">
-    <?php if (isset($_SESSION['user_id'])): ?>
+  <?php if (isset($_SESSION['user_id'])): ?>
+    <div class="user-bar">
       <div class="user-info">
-        <strong>Welcome, <?php echo htmlspecialchars($_SESSION['user_name']); ?>!</strong> 
-        (<?php echo htmlspecialchars($_SESSION['user_email']); ?>)
+        Welcome, <strong><?php echo htmlspecialchars($_SESSION['user_name']); ?></strong>
       </div>
-    <?php endif; ?>
-    <div class="welcome-text">
-      <h2>Welcome to ShopSphere</h2>
-      <p>Join our community today to access exclusive deals and features!</p>
-      <div class="actions">
-        <?php if (isset($_SESSION['user_id'])): ?>
-          <a href="catalog.php" class="btn">Browse Watches</a>
-          <a href="logout.php" class="btn btn-logout">Sign Out</a>
-        <?php else: ?>
-          <a href="login.php" class="btn">Sign In</a>
-          <a href="register.php" class="btn">Create Account</a>
-        <?php endif; ?>
-        <a href="view_users.php" class="btn btn-secondary">View Members</a>
+      <div>
+        <a href="catalog.php">Browse All Watches</a>
+        <a href="wishlist.php">My Wishlist</a>
+        <a href="logout.php">Log Out</a>
       </div>
     </div>
+  <?php endif; ?>
+
+  <div class="container">
+    <div class="hero">
+      <h2>Discover the World's Finest Timepieces</h2>
+      <p>ShopSphere curates an exclusive collection of luxury watches from the most prestigious brands. Each timepiece represents the pinnacle of craftsmanship, precision engineering, and timeless design. From classic dress watches to modern sports chronographs, find your perfect companion for life's most important moments.</p>
+      
+      <?php if (!isset($_SESSION['user_id'])): ?>
+        <div class="cta-buttons">
+          <a href="login.php" class="btn btn-primary">Sign In</a>
+          <a href="register.php" class="btn">Create Account</a>
+        </div>
+      <?php endif; ?>
+    </div>
+
+    <div class="featured">
+      <h3>Featured Collection</h3>
+      <div class="watch-grid">
+        <div class="watch-card">
+          <div class="watch-image-container">
+            <img src="images/rolex-submariner.jpg" alt="Rolex Submariner" class="watch-image" onerror="this.src='https://via.placeholder.com/350x350/1a1a1a/666666?text=Rolex'">
+          </div>
+          <div class="watch-info">
+            <div class="watch-brand">Rolex</div>
+            <div class="watch-name">Submariner Date</div>
+            <div class="watch-price">£9,250</div>
+          </div>
+        </div>
+
+        <div class="watch-card">
+          <div class="watch-image-container">
+            <img src="images/omega-speedmaster.jpg" alt="Omega Speedmaster" class="watch-image" onerror="this.src='https://via.placeholder.com/350x350/1a1a1a/666666?text=Omega'">
+          </div>
+          <div class="watch-info">
+            <div class="watch-brand">Omega</div>
+            <div class="watch-name">Speedmaster Professional</div>
+            <div class="watch-price">£6,100</div>
+          </div>
+        </div>
+
+        <div class="watch-card">
+          <div class="watch-image-container">
+            <img src="images/ap-royal-oak.jpg" alt="Audemars Piguet Royal Oak" class="watch-image" onerror="this.src='https://via.placeholder.com/350x350/1a1a1a/666666?text=AP'">
+          </div>
+          <div class="watch-info">
+            <div class="watch-brand">Audemars Piguet</div>
+            <div class="watch-name">Royal Oak</div>
+            <div class="watch-price">£28,500</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <?php if (!isset($_SESSION['user_id'])): ?>
+      <div class="login-prompt">
+        <h4>Explore Our Full Collection</h4>
+        <p>Sign in to browse our complete catalog, save favorites to your wishlist, and access exclusive member benefits.</p>
+        <div class="cta-buttons">
+          <a href="login.php" class="btn btn-primary">Sign In to Continue</a>
+          <a href="register.php" class="btn">Create Free Account</a>
+        </div>
+      </div>
+    <?php endif; ?>
   </div>
 </body>
 </html>
