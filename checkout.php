@@ -153,14 +153,10 @@ sqlsrv_close($conn);
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Helvetica Neue', 'Arial', sans-serif; background: #0a0a0a; color: #f5f5f5; min-height: 100vh; }
-        .header { background: #000; color: #fff; padding: 25px 0; text-align: center; border-bottom: 1px solid #222; }
+        .header { background: #000; color: #fff; padding: 25px 0; text-align: center; border-bottom: 1px solid #222; position: relative; }
         .header h1 { font-size: 2em; font-weight: 300; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 5px; }
-        .header p { font-size: 0.9em; color: #999; letter-spacing: 2px; text-transform: uppercase; font-weight: 300; }
-        .user-bar { background: #111; color: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; }
-        .user-bar .user-info { font-size: 13px; color: #999; font-weight: 300; }
-        .user-bar .user-info strong { color: #fff; font-weight: 400; }
-        .user-bar a { color: #fff; text-decoration: none; padding: 10px 24px; background: transparent; border: 1px solid #444; border-radius: 0; font-size: 11px; font-weight: 400; transition: all 0.3s ease; margin-left: 10px; letter-spacing: 1.5px; text-transform: uppercase; }
-        .user-bar a:hover { background: #fff; color: #000; border-color: #fff; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(255,255,255,0.1); }
+        .welcome a:hover { background: #fff; color: #000; border-color: #fff; }
+        .nav a:hover, .nav a.active { color: #fff; background: rgba(255,255,255,0.05); border-bottom-color: #fff; }
         .container { max-width: 1400px; margin: 60px auto; padding: 0 40px; }
         .checkout-grid { display: grid; grid-template-columns: 1fr 400px; gap: 40px; }
         .checkout-form { background: #111; border: 1px solid #222; padding: 40px; }
@@ -197,20 +193,22 @@ sqlsrv_close($conn);
 <body>
     <div class="header">
         <h1>ShopSphere</h1>
-        <p>Secure Checkout</p>
+        <div class="tagline" style="font-size: 12px; color: #888; letter-spacing: 2px; text-transform: uppercase;">Secure Checkout</div>
+        <div class="welcome" style="position: absolute; top: 30px; right: 40px; color: #888; font-size: 12px; letter-spacing: 1px; text-transform: uppercase;">
+            Welcome, <span style="color: #fff; margin-left: 5px;"><?php echo htmlspecialchars($user_name); ?></span>
+            <a href="logout.php" style="color: #fff; text-decoration: none; margin-left: 15px; padding: 8px 16px; border: 1px solid #333; transition: all 0.3s ease;">Logout</a>
+        </div>
     </div>
     
-    <div class="user-bar">
-        <div class="user-info">
-            Welcome, <strong><?php echo htmlspecialchars($user_name); ?></strong>
-        </div>
-        <div>
-            <a href="index.php">Home</a>
-            <a href="catalog.php">Browse Watches</a>
-            <a href="cart.php">Cart</a>
-            <a href="logout.php">Log Out</a>
-        </div>
-    </div>
+    <nav class="nav" style="background: #111; border-bottom: 1px solid #222; padding: 0;">
+        <ul style="list-style: none; display: flex; justify-content: center; max-width: 1200px; margin: 0 auto;">
+            <li style="margin: 0;"><a href="index.php" style="display: block; padding: 18px 30px; color: #888; text-decoration: none; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s ease; border-bottom: 2px solid transparent;">Home</a></li>
+            <li style="margin: 0;"><a href="catalog.php" style="display: block; padding: 18px 30px; color: #888; text-decoration: none; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s ease; border-bottom: 2px solid transparent;">Catalog</a></li>
+            <li style="margin: 0;"><a href="wishlist.php" style="display: block; padding: 18px 30px; color: #888; text-decoration: none; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s ease; border-bottom: 2px solid transparent;">Wishlist</a></li>
+            <li style="margin: 0;"><a href="cart.php" style="display: block; padding: 18px 30px; color: #888; text-decoration: none; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s ease; border-bottom: 2px solid transparent;">Cart</a></li>
+            <li style="margin: 0;"><a href="my_orders.php" style="display: block; padding: 18px 30px; color: #888; text-decoration: none; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s ease; border-bottom: 2px solid transparent;">My Orders</a></li>
+        </ul>
+    </nav>
     
     <div class="container">
         <?php if ($error): ?>

@@ -53,8 +53,18 @@ sqlsrv_close($conn);
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Helvetica Neue', 'Arial', sans-serif; background: #0a0a0a; color: #f5f5f5; min-height: 100vh; }
-        .header { background: #000; color: #fff; padding: 25px 0; text-align: center; border-bottom: 1px solid #222; }
+        .header { background: #000; color: #fff; padding: 25px 0; text-align: center; border-bottom: 1px solid #222; position: relative; }
         .header h1 { font-size: 2em; font-weight: 300; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 5px; }
+        .header .tagline { font-size: 12px; color: #888; letter-spacing: 2px; text-transform: uppercase; }
+        .welcome { position: absolute; top: 30px; right: 40px; color: #888; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; }
+        .welcome span { color: #fff; margin-left: 5px; }
+        .welcome a { color: #fff; text-decoration: none; margin-left: 15px; padding: 8px 16px; border: 1px solid #333; transition: all 0.3s ease; }
+        .welcome a:hover { background: #fff; color: #000; border-color: #fff; }
+        .nav { background: #111; border-bottom: 1px solid #222; padding: 0; }
+        .nav ul { list-style: none; display: flex; justify-content: center; max-width: 1200px; margin: 0 auto; }
+        .nav li { margin: 0; }
+        .nav a { display: block; padding: 18px 30px; color: #888; text-decoration: none; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s ease; border-bottom: 2px solid transparent; }
+        .nav a:hover, .nav a.active { color: #fff; background: rgba(255,255,255,0.05); border-bottom-color: #fff; }
         .container { max-width: 800px; margin: 80px auto; padding: 0 40px; text-align: center; }
         .success-icon { font-size: 80px; color: #27ae60; margin-bottom: 30px; }
         .confirmation-box { background: #111; border: 1px solid #222; padding: 50px; margin-bottom: 30px; }
@@ -77,7 +87,22 @@ sqlsrv_close($conn);
 <body>
     <div class="header">
         <h1>ShopSphere</h1>
+        <div class="tagline">Luxury Timepieces</div>
+        <div class="welcome">
+            Welcome, <span><?php echo htmlspecialchars($user_name); ?></span>
+            <a href="logout.php">Logout</a>
+        </div>
     </div>
+    
+    <nav class="nav">
+        <ul>
+            <li><a href="index.php">Home</a></li>
+            <li><a href="catalog.php">Catalog</a></li>
+            <li><a href="wishlist.php">Wishlist</a></li>
+            <li><a href="cart.php">Cart</a></li>
+            <li><a href="my_orders.php">My Orders</a></li>
+        </ul>
+    </nav>
     
     <div class="container">
         <div class="success-icon">✓</div>
