@@ -56,6 +56,7 @@ session_start();
       <div>
         <a href="catalog.php">Browse All Watches</a>
         <a href="wishlist.php">My Wishlist</a>
+        <a href="cart.php">🛒 Cart</a>
         <a href="logout.php">Log Out</a>
       </div>
     </div>

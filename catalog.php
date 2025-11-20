@@ -90,6 +90,9 @@ sqlsrv_close($conn);
     .wishlist-btn { background: #1a1a1a; border-color: #555; }
     .wishlist-btn:hover { background: #e74c3c; border-color: #e74c3c; color: #fff; }
     .wishlist-btn:disabled { opacity: 0.6; }
+    .cart-btn { background: #1a1a1a; border-color: #27ae60; color: #27ae60; }
+    .cart-btn:hover { background: #27ae60; border-color: #27ae60; color: #fff; }
+    .cart-btn:disabled { opacity: 0.6; }
     .enquire-now-btn { background: #1a1a1a; border-color: #3498db; color: #3498db; }
     .enquire-now-btn:hover { background: #3498db; border-color: #3498db; color: #fff; }
     .empty-message { text-align: center; padding: 100px 20px; color: #666; }
@@ -111,6 +114,7 @@ sqlsrv_close($conn);
     <div>
       <a href="index.php">Home</a>
       <a href="wishlist.php">💝 My Wishlist</a>
+      <a href="cart.php">🛒 Cart</a>
       <?php if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@gmail.com'): ?>
         <a href="admin_dashboard.php">Manage Products</a>
       <?php endif; ?>
@@ -150,10 +154,12 @@ sqlsrv_close($conn);
               <div class="watch-price">£<?php echo number_format($watch['price'], 0); ?></div>
             </div>
             <div class="watch-card-footer">
-              <button class="enquire-btn wishlist-btn" data-watch-id="<?php echo $watch['id']; ?>" onclick="addToWishlist(<?php echo $watch['id']; ?>, this)" style="cursor:pointer;">
-                ❤️ Add to Wishlist
+              <button class="enquire-btn cart-btn" data-watch-id="<?php echo $watch['id']; ?>" onclick="addToCart(<?php echo $watch['id']; ?>, this)" style="cursor:pointer;">
+                🛒 Add to Cart
               </button>
-              <a href="#" class="enquire-btn enquire-now-btn">Enquire Now</a>
+              <button class="enquire-btn wishlist-btn" data-watch-id="<?php echo $watch['id']; ?>" onclick="addToWishlist(<?php echo $watch['id']; ?>, this)" style="cursor:pointer;">
+                ❤️ Wishlist
+              </button>
             </div>
           </div>
         <?php endforeach; ?>
@@ -162,8 +168,13 @@ sqlsrv_close($conn);
   </div>
   
   <script>
-    // Load user's wishlist on page load to mark items already in wishlist
+    // Load user's wishlist and cart on page load
     document.addEventListener('DOMContentLoaded', async () => {
+      await loadWishlistStatus();
+      await loadCartStatus();
+    });
+    
+    async function loadWishlistStatus() {
       try {
         const userId = <?php echo $_SESSION['user_id']; ?>;
         const response = await fetch(`https://wishlists-bvgrckbzfmf2gzd9.norwayeast-01.azurewebsites.net/api/get_wishlist?user_id=${userId}`);
@@ -189,7 +200,35 @@ sqlsrv_close($conn);
       } catch (error) {
         console.error('Error loading wishlist status:', error);
       }
-    });
+    }
+    
+    async function loadCartStatus() {
+      try {
+        const userId = <?php echo $_SESSION['user_id']; ?>;
+        const response = await fetch(`cart_api.php?action=get_cart&user_id=${userId}`);
+        const data = await response.json();
+        
+        if (data.success && data.items) {
+          const cartWatchIds = data.items.map(item => item.watch_id);
+          
+          // Update buttons for items already in cart
+          document.querySelectorAll('.cart-btn').forEach(btn => {
+            const watchId = parseInt(btn.getAttribute('data-watch-id'));
+            if (cartWatchIds.includes(watchId)) {
+              btn.innerHTML = '✓ In Cart';
+              btn.style.background = '#27ae60';
+              btn.style.borderColor = '#27ae60';
+              btn.style.color = '#fff';
+              btn.disabled = true;
+              btn.style.cursor = 'not-allowed';
+              btn.style.transform = 'none';
+            }
+          });
+        }
+      } catch (error) {
+        console.error('Error loading cart status:', error);
+      }
+    }
     
     async function addToWishlist(watchId, buttonElement) {
       try {
@@ -222,6 +261,43 @@ sqlsrv_close($conn);
         
       } catch (error) {
         alert('✗ Error adding to wishlist');
+        console.error(error);
+      }
+    }
+    
+    async function addToCart(watchId, buttonElement) {
+      try {
+        const response = await fetch('cart_api.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ 
+            action: 'add_to_cart',
+            user_id: <?php echo $_SESSION['user_id']; ?>,
+            watch_id: watchId,
+            quantity: 1
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          // Update button state
+          buttonElement.innerHTML = '✓ In Cart';
+          buttonElement.style.background = '#27ae60';
+          buttonElement.style.borderColor = '#27ae60';
+          buttonElement.style.color = '#fff';
+          buttonElement.disabled = true;
+          buttonElement.style.cursor = 'not-allowed';
+          buttonElement.style.transform = 'none';
+          alert('✓ ' + data.message);
+        } else {
+          alert('✗ ' + (data.error || 'Failed to add to cart'));
+        }
+        
+      } catch (error) {
+        alert('✗ Error adding to cart');
         console.error(error);
       }
     }

@@ -66,6 +66,7 @@ $user_name = $_SESSION['user_name'] ?? 'User';
         <div>
             <a href="index.php">Home</a>
             <a href="catalog.php">Browse Watches</a>
+            <a href="cart.php">🛒 Cart</a>
             <a href="logout.php">Log Out</a>
         </div>
     </div>
