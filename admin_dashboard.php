@@ -202,21 +202,91 @@ sqlsrv_close($conn);
         </div>
         
         <div class="form-group">
-          <label for="image_url">Image Path</label>
-          <input type="text" id="image_url" name="image_url" required>
+          <label for="image_file">Watch Image</label>
+          <input type="file" id="image_file" accept="image/*" style="color:#fff; padding:12px 0;">
+          <input type="hidden" id="image_url" name="image_url" required>
+          <div id="image_preview" style="margin-top:15px; display:none;">
+            <img id="preview_img" style="max-width:200px; border:1px solid #333; padding:10px; background:#1a1a1a;">
+          </div>
+          <div id="upload_status" style="margin-top:10px; font-size:12px; color:#999;"></div>
         </div>
         
-        <button type="submit" class="btn-submit">Save Watch</button>
+        <button type="submit" class="btn-submit" id="submitBtn">Save Watch</button>
       </form>
     </div>
   </div>
 
   <script>
+    const UPLOAD_API = 'https://image-uploads-cdekethvcudth4hb.norwayeast-01.azurewebsites.net/api/upload_image';
+
+    // Handle image file selection
+    document.getElementById('image_file').addEventListener('change', async function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      // Show preview
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        document.getElementById('preview_img').src = event.target.result;
+        document.getElementById('image_preview').style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+      
+      // Upload to Azure
+      document.getElementById('upload_status').textContent = 'Uploading...';
+      document.getElementById('submitBtn').disabled = true;
+      
+      try {
+        const base64 = await fileToBase64(file);
+        
+        const response = await fetch(UPLOAD_API, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            image: base64,
+            filename: file.name
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          document.getElementById('image_url').value = data.url;
+          document.getElementById('upload_status').textContent = '✓ Upload successful';
+          document.getElementById('upload_status').style.color = '#4ade80';
+          document.getElementById('submitBtn').disabled = false;
+        } else {
+          document.getElementById('upload_status').textContent = '✗ ' + (data.error || 'Upload failed');
+          document.getElementById('upload_status').style.color = '#ff6b6b';
+          document.getElementById('submitBtn').disabled = false;
+        }
+      } catch (error) {
+        document.getElementById('upload_status').textContent = '✗ Upload error';
+        document.getElementById('upload_status').style.color = '#ff6b6b';
+        document.getElementById('submitBtn').disabled = false;
+        console.error(error);
+      }
+    });
+    
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+    
     function openAddModal() {
       document.getElementById('modalTitle').textContent = 'Add Watch';
       document.getElementById('action').value = 'add';
       document.getElementById('watchId').value = '';
       document.getElementById('watchForm').reset();
+      document.getElementById('image_preview').style.display = 'none';
+      document.getElementById('upload_status').textContent = '';
+      document.getElementById('submitBtn').disabled = false;
       document.getElementById('watchModal').style.display = 'block';
     }
 
@@ -229,6 +299,10 @@ sqlsrv_close($conn);
       document.getElementById('price').value = price;
       document.getElementById('description').value = description;
       document.getElementById('image_url').value = image_url;
+      document.getElementById('preview_img').src = image_url;
+      document.getElementById('image_preview').style.display = 'block';
+      document.getElementById('upload_status').textContent = '';
+      document.getElementById('submitBtn').disabled = false;
       document.getElementById('watchModal').style.display = 'block';
     }
 
