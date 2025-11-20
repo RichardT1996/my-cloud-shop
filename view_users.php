@@ -42,25 +42,58 @@ if ($stmt === false) {
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Registered Users - MyShop</title>
+  <title>Registered Users - ShopSphere</title>
   <style>
-    body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; }
-    .header { background:#2c3e50; color:#fff; padding:20px; text-align:center; }
-    .container { max-width:1000px; margin:30px auto; padding:20px; background:#fff; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.05); }
-    table { width:100%; border-collapse:collapse; }
-    th, td { padding:12px; border-bottom:1px solid #eee; text-align:left; }
-    th { background:#fafafa; }
-    .actions { margin-top:16px; }
-    .btn { display:inline-block; background:#007bff; color:#fff; padding:8px 14px; text-decoration:none; border-radius:4px; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Helvetica Neue', 'Arial', sans-serif; background: #0a0a0a; color: #f5f5f5; min-height: 100vh; }
+    .header { background: #000; color: #fff; padding: 25px 0; text-align: center; border-bottom: 1px solid #222; position: relative; }
+    .header h1 { font-size: 2em; font-weight: 300; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 5px; }
+    .header .tagline { font-size: 12px; color: #e74c3c; letter-spacing: 2px; text-transform: uppercase; }
+    .welcome { position: absolute; top: 30px; right: 40px; color: #888; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; }
+    .welcome span { color: #fff; margin-left: 5px; }
+    .welcome a { color: #fff; text-decoration: none; margin-left: 15px; padding: 8px 16px; border: 1px solid #333; transition: all 0.3s ease; }
+    .welcome a:hover { background: #fff; color: #000; border-color: #fff; }
+    .nav { background: #111; border-bottom: 1px solid #222; padding: 0; }
+    .nav ul { list-style: none; display: flex; justify-content: center; max-width: 1200px; margin: 0 auto; }
+    .nav li { margin: 0; }
+    .nav a { display: block; padding: 18px 30px; color: #888; text-decoration: none; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s ease; border-bottom: 2px solid transparent; }
+    .nav a:hover, .nav a.active { color: #fff; background: rgba(255,255,255,0.05); border-bottom-color: #fff; }
+    .container { max-width: 1200px; margin: 60px auto; padding: 0 40px; }
+    .page-title { font-size: 2.5em; font-weight: 300; letter-spacing: 3px; margin-bottom: 15px; text-align: center; }
+    .page-subtitle { color: #888; text-align: center; margin-bottom: 50px; font-size: 13px; letter-spacing: 1px; }
+    table { width: 100%; border-collapse: collapse; background: #111; border: 1px solid #222; }
+    thead { background: #1a1a1a; border-bottom: 1px solid #222; }
+    th { padding: 20px; text-align: left; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #888; font-weight: 400; border-bottom: 1px solid #222; }
+    td { padding: 20px; border-bottom: 1px solid #222; color: #ccc; font-size: 13px; }
+    tr:hover { background: rgba(255,255,255,0.02); }
+    .actions { margin-top: 30px; text-align: center; }
+    .btn { display: inline-block; padding: 12px 24px; background: transparent; border: 1px solid #444; color: #fff; text-decoration: none; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s ease; margin: 0 5px; }
+    .btn:hover { background: #fff; color: #000; border-color: #fff; transform: translateY(-2px); }
   </style>
 </head>
 <body>
   <div class="header">
-    <h1>MyShop</h1>
-    <p>Registered Users</p>
+    <h1>ShopSphere</h1>
+    <div class="tagline">Admin Dashboard</div>
+    <div class="welcome">
+      Admin, <span><?php echo htmlspecialchars($_SESSION['user_name']); ?></span>
+      <a href="logout.php">Logout</a>
+    </div>
   </div>
+  
+  <nav class="nav">
+    <ul>
+      <li><a href="index.php">Home</a></li>
+      <li><a href="catalog.php">Catalog</a></li>
+      <li><a href="admin_dashboard.php">Manage Products</a></li>
+      <li><a href="view_users.php" class="active">Users</a></li>
+      <li><a href="admin_orders.php">Orders</a></li>
+    </ul>
+  </nav>
 
   <div class="container">
+    <h1 class="page-title">Registered Users</h1>
+    <p class="page-subtitle">Manage customer accounts</p>
     <?php if (($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) === null) : ?>
       <p>No users found.</p>
     <?php else: ?>
@@ -88,8 +121,7 @@ if ($stmt === false) {
     <?php endif; ?>
 
     <div class="actions">
-      <a href="index.php" class="btn">Back to Home</a>
-      <a href="register.php" class="btn">Register New User</a>
+      <a href="admin_dashboard.php" class="btn">Back to Dashboard</a>
     </div>
   </div>
 

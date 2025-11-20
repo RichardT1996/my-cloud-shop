@@ -68,14 +68,18 @@ sqlsrv_close($conn);
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Helvetica Neue', 'Arial', sans-serif; background: #0a0a0a; color: #f5f5f5; }
-    .header { background: #000; color: #fff; padding: 25px 0; text-align: center; border-bottom: 1px solid #222; }
+    .header { background: #000; color: #fff; padding: 25px 0; text-align: center; border-bottom: 1px solid #222; position: relative; }
     .header h1 { font-size: 2em; font-weight: 300; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 5px; }
-    .header p { font-size: 0.9em; color: #999; letter-spacing: 2px; text-transform: uppercase; font-weight: 300; }
-    .user-bar { background: #111; color: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; }
-    .user-bar .user-info { font-size: 13px; color: #999; font-weight: 300; }
-    .user-bar .user-info strong { color: #fff; font-weight: 400; }
-    .user-bar a { color: #fff; text-decoration: none; padding: 8px 20px; background: transparent; border: 1px solid #444; font-size: 12px; font-weight: 400; transition: all 0.3s ease; margin-left: 10px; letter-spacing: 1px; text-transform: uppercase; }
-    .user-bar a:hover { background: #fff; color: #000; border-color: #fff; }
+    .header .tagline { font-size: 12px; color: #e74c3c; letter-spacing: 2px; text-transform: uppercase; }
+    .welcome { position: absolute; top: 30px; right: 40px; color: #888; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; }
+    .welcome span { color: #fff; margin-left: 5px; }
+    .welcome a { color: #fff; text-decoration: none; margin-left: 15px; padding: 8px 16px; border: 1px solid #333; transition: all 0.3s ease; }
+    .welcome a:hover { background: #fff; color: #000; border-color: #fff; }
+    .nav { background: #111; border-bottom: 1px solid #222; padding: 0; }
+    .nav ul { list-style: none; display: flex; justify-content: center; max-width: 1200px; margin: 0 auto; }
+    .nav li { margin: 0; }
+    .nav a { display: block; padding: 18px 30px; color: #888; text-decoration: none; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s ease; border-bottom: 2px solid transparent; }
+    .nav a:hover, .nav a.active { color: #fff; background: rgba(255,255,255,0.05); border-bottom-color: #fff; }
     .container { max-width: 1400px; margin: 40px auto; padding: 0 40px; }
     .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #222; }
     .dashboard-header h2 { color: #fff; font-size: 1.8em; font-weight: 300; letter-spacing: 2px; text-transform: uppercase; }
@@ -112,19 +116,22 @@ sqlsrv_close($conn);
 <body>
   <div class="header">
     <h1>ShopSphere</h1>
-    <p>Admin Dashboard</p>
+    <div class="tagline">Admin Dashboard</div>
+    <div class="welcome">
+      Admin, <span><?php echo htmlspecialchars($_SESSION['user_name']); ?></span>
+      <a href="logout.php">Logout</a>
+    </div>
   </div>
   
-  <div class="user-bar">
-    <div class="user-info">
-      Admin: <strong><?php echo htmlspecialchars($_SESSION['user_name']); ?></strong>
-    </div>
-    <div>
-      <a href="catalog.php">Catalog</a>
-      <a href="index.php">Home</a>
-      <a href="logout.php">Sign Out</a>
-    </div>
-  </div>
+  <nav class="nav">
+    <ul>
+      <li><a href="index.php">Home</a></li>
+      <li><a href="catalog.php">Catalog</a></li>
+      <li><a href="admin_dashboard.php" class="active">Manage Products</a></li>
+      <li><a href="view_users.php">Users</a></li>
+      <li><a href="admin_orders.php">Orders</a></li>
+    </ul>
+  </nav>
 
   <div class="container">
     <div class="dashboard-header">
