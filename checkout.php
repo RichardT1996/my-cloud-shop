@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
             'currency' => 'GBP',
             'payment_method' => $payment_method,
             'order_number' => $order_number,
-            'customer_id' => $user_id
+            'user_id' => $user_id
         );
         
         $payment_url = 'https://payments-enfzg2cue2ddggb6.norwayeast-01.azurewebsites.net/api/process_payment';
