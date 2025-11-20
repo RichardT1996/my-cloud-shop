@@ -8,6 +8,63 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $user_name = $_SESSION['user_name'] ?? 'User';
+$user_id = $_SESSION['user_id'];
+
+// Database connection
+$serverName = "tcp:mydatabase-replica.database.windows.net,1433";
+$connectionOptions = array(
+    "Database" => "myDatabase",
+    "Uid" => "myadmin",
+    "PWD" => "password123!",
+    "Encrypt" => 1,
+    "TrustServerCertificate" => 0
+);
+
+$message = '';
+$error = '';
+
+// Handle POST actions
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $conn = sqlsrv_connect($serverName, $connectionOptions);
+    
+    if ($conn) {
+        $action = $_POST['action'] ?? '';
+        $watch_id = $_POST['watch_id'] ?? 0;
+        
+        if ($action === 'remove' && $watch_id) {
+            $sql = "DELETE FROM cart WHERE user_id = ? AND watch_id = ?";
+            $stmt = sqlsrv_query($conn, $sql, array($user_id, $watch_id));
+            if ($stmt) {
+                $message = 'Item removed from cart';
+                sqlsrv_free_stmt($stmt);
+            } else {
+                $error = 'Failed to remove item';
+            }
+        } elseif ($action === 'update_quantity' && $watch_id) {
+            $quantity = (int)($_POST['quantity'] ?? 1);
+            if ($quantity < 1) {
+                // Remove if quantity is 0 or less
+                $sql = "DELETE FROM cart WHERE user_id = ? AND watch_id = ?";
+                $stmt = sqlsrv_query($conn, $sql, array($user_id, $watch_id));
+                if ($stmt) {
+                    $message = 'Item removed from cart';
+                    sqlsrv_free_stmt($stmt);
+                }
+            } else {
+                $sql = "UPDATE cart SET quantity = ? WHERE user_id = ? AND watch_id = ?";
+                $stmt = sqlsrv_query($conn, $sql, array($quantity, $user_id, $watch_id));
+                if ($stmt) {
+                    $message = 'Quantity updated';
+                    sqlsrv_free_stmt($stmt);
+                } else {
+                    $error = 'Failed to update quantity';
+                }
+            }
+        }
+        
+        sqlsrv_close($conn);
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -93,39 +150,78 @@ $user_name = $_SESSION['user_name'] ?? 'User';
             <p id="cart-count">Loading items...</p>
         </div>
         
+        <?php if ($message): ?>
+            <div style="background: #27ae60; color: white; padding: 15px 30px; margin-bottom: 20px; font-size: 13px; letter-spacing: 1px; border: 1px solid #229954;">
+                ✓ <?php echo htmlspecialchars($message); ?>
+            </div>
+        <?php endif; ?>
+        
+        <?php if ($error): ?>
+            <div class="error-message">
+                ✗ <?php echo htmlspecialchars($error); ?>
+            </div>
+        <?php endif; ?>
+        
         <div id="error-container"></div>
         <div id="loading" class="loading">Loading your cart...</div>
         <div id="cart-container"></div>
     </div>
     
-    <script>
-        let cartData = { items: [], total: 0, count: 0 };
+    <?php
+    // Fetch cart items from database
+    $user_id = $_SESSION['user_id'];
+    $serverName = "tcp:mydatabase-replica.database.windows.net,1433";
+    $connectionOptions = array(
+        "Database" => "myDatabase",
+        "Uid" => "myadmin",
+        "PWD" => "password123!",
+        "Encrypt" => 1,
+        "TrustServerCertificate" => 0
+    );
+    
+    $conn = sqlsrv_connect($serverName, $connectionOptions);
+    $cart_items = array();
+    $cart_total = 0;
+    $cart_count = 0;
+    
+    if ($conn) {
+        $sql = "SELECT c.id, c.watch_id, c.quantity, c.added_at,
+                       w.name, w.brand, w.price, w.description, w.image_url
+                FROM cart c
+                INNER JOIN watches w ON c.watch_id = w.id
+                WHERE c.user_id = ?
+                ORDER BY c.added_at DESC";
         
-        // Load cart on page load
-        document.addEventListener('DOMContentLoaded', loadCart);
+        $params = array($user_id);
+        $stmt = sqlsrv_query($conn, $sql, $params);
         
-        async function loadCart() {
-            try {
-                const userId = <?php echo $_SESSION['user_id']; ?>;
-                const response = await fetch(`cart_api.php?action=get_cart&user_id=${userId}`);
-                const data = await response.json();
-                
-                document.getElementById('loading').style.display = 'none';
-                
-                if (!data.success) {
-                    showError(data.error || 'Failed to load cart');
-                    return;
-                }
-                
-                cartData = data;
-                displayCart(data);
-                
-            } catch (error) {
-                document.getElementById('loading').style.display = 'none';
-                showError('Error loading cart');
-                console.error(error);
+        if ($stmt !== false) {
+            while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                $quantity = (int)$row['quantity'];
+                $price = (float)$row['price'];
+                $cart_total += $price * $quantity;
+                $cart_count += $quantity;
+                $cart_items[] = $row;
             }
+            sqlsrv_free_stmt($stmt);
         }
+        sqlsrv_close($conn);
+    }
+    ?>
+    
+    <script>
+        const cartData = <?php echo json_encode([
+            'items' => $cart_items,
+            'count' => $cart_count,
+            'subtotal' => $cart_total,
+            'total' => $cart_total
+        ]); ?>;
+        
+        // Display cart on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('loading').style.display = 'none';
+            displayCart(cartData);
+        });
         
         function displayCart(data) {
             const container = document.getElementById('cart-container');
@@ -179,6 +275,8 @@ $user_name = $_SESSION['user_name'] ?? 'User';
             itemDiv.className = 'cart-item';
             itemDiv.setAttribute('data-watch-id', item.watch_id);
             
+            const addedDate = item.added_at ? new Date(item.added_at.date || item.added_at).toLocaleDateString() : 'Recently';
+            
             itemDiv.innerHTML = `
                 <div class="item-image">
                     ${item.image_url ? `<img src="${item.image_url}" alt="${item.name}">` : '<div style="color:#666;">No Image</div>'}
@@ -187,84 +285,31 @@ $user_name = $_SESSION['user_name'] ?? 'User';
                     <div class="item-brand">${item.brand}</div>
                     <div class="item-name">${item.name}</div>
                     <div class="item-description">${item.description || ''}</div>
+                    <div style="color: #555; font-size: 11px; margin-top: 10px;">Added ${addedDate}</div>
                 </div>
                 <div class="item-price">£${formatPrice(item.price)}</div>
                 <div class="item-quantity">
-                    <button class="qty-btn" onclick="updateQuantity(${item.watch_id}, ${item.quantity - 1})">−</button>
-                    <span class="qty-display">${item.quantity}</span>
-                    <button class="qty-btn" onclick="updateQuantity(${item.watch_id}, ${item.quantity + 1})">+</button>
+                    <form method="POST" style="display: flex; align-items: center; gap: 10px;">
+                        <input type="hidden" name="action" value="update_quantity">
+                        <input type="hidden" name="watch_id" value="${item.watch_id}">
+                        <button type="submit" name="quantity" value="${item.quantity - 1}" class="qty-btn">−</button>
+                        <span class="qty-display">${item.quantity}</span>
+                        <button type="submit" name="quantity" value="${item.quantity + 1}" class="qty-btn">+</button>
+                    </form>
                 </div>
                 <div class="item-remove">
-                    <button class="remove-btn" onclick="removeFromCart(${item.watch_id})" title="Remove from cart">×</button>
+                    <form method="POST">
+                        <input type="hidden" name="action" value="remove">
+                        <input type="hidden" name="watch_id" value="${item.watch_id}">
+                        <button type="submit" class="remove-btn" title="Remove from cart" onclick="return confirm('Remove this item from your cart?')">×</button>
+                    </form>
                 </div>
             `;
             
             return itemDiv;
         }
         
-        async function updateQuantity(watchId, newQuantity) {
-            if (newQuantity < 1) {
-                removeFromCart(watchId);
-                return;
-            }
-            
-            try {
-                const userId = <?php echo $_SESSION['user_id']; ?>;
-                const response = await fetch('cart_api.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        action: 'update_quantity',
-                        user_id: userId,
-                        watch_id: watchId,
-                        quantity: newQuantity
-                    })
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    loadCart(); // Reload cart to update totals
-                } else {
-                    showError(data.error || 'Failed to update quantity');
-                }
-                
-            } catch (error) {
-                showError('Error updating quantity');
-                console.error(error);
-            }
-        }
-        
-        async function removeFromCart(watchId) {
-            if (!confirm('Remove this item from your cart?')) {
-                return;
-            }
-            
-            try {
-                const userId = <?php echo $_SESSION['user_id']; ?>;
-                const response = await fetch('cart_api.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        action: 'remove_from_cart',
-                        user_id: userId,
-                        watch_id: watchId
-                    })
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    loadCart(); // Reload cart
-                } else {
-                    showError(data.error || 'Failed to remove item');
-                }
-                
-            } catch (error) {
-                showError('Error removing item');
-                console.error(error);
-            }
-        }
+
         
         function proceedToCheckout() {
             alert('Checkout functionality will be implemented soon!\n\nTotal: £' + formatPrice(cartData.total));

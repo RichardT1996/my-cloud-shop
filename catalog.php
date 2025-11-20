@@ -8,6 +8,48 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+// Handle add to cart action
+$cart_message = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
+    $watch_id = (int)$_POST['watch_id'];
+    $user_id = $_SESSION['user_id'];
+    
+    $serverName = "tcp:mydatabase-replica.database.windows.net,1433";
+    $connectionOptions = array(
+        "Database" => "myDatabase",
+        "Uid" => "myadmin",
+        "PWD" => "password123!",
+        "Encrypt" => 1,
+        "TrustServerCertificate" => 0
+    );
+    
+    $conn = sqlsrv_connect($serverName, $connectionOptions);
+    if ($conn) {
+        // Check if item already in cart
+        $checkSql = "SELECT id, quantity FROM cart WHERE user_id = ? AND watch_id = ?";
+        $checkStmt = sqlsrv_query($conn, $checkSql, array($user_id, $watch_id));
+        
+        if ($checkStmt) {
+            $existing = sqlsrv_fetch_array($checkStmt, SQLSRV_FETCH_ASSOC);
+            
+            if ($existing) {
+                // Update quantity
+                $newQty = $existing['quantity'] + 1;
+                $updateSql = "UPDATE cart SET quantity = ? WHERE id = ?";
+                sqlsrv_query($conn, $updateSql, array($newQty, $existing['id']));
+                $cart_message = 'Cart updated! Quantity increased.';
+            } else {
+                // Insert new item
+                $insertSql = "INSERT INTO cart (user_id, watch_id, quantity, added_at) VALUES (?, ?, 1, GETDATE())";
+                sqlsrv_query($conn, $insertSql, array($user_id, $watch_id));
+                $cart_message = 'Added to cart successfully!';
+            }
+            sqlsrv_free_stmt($checkStmt);
+        }
+        sqlsrv_close($conn);
+    }
+}
+
 // DB connection
 $serverName = "tcp:mydatabase-replica.database.windows.net,1433";
 $connectionOptions = array(
@@ -128,6 +170,12 @@ sqlsrv_close($conn);
       <p>Discover luxury timepieces from the world's finest brands</p>
     </div>
 
+    <?php if ($cart_message): ?>
+      <div style="background: #27ae60; color: white; padding: 15px 30px; margin-bottom: 20px; font-size: 13px; letter-spacing: 1px; border: 1px solid #229954; text-align: center;">
+        ✓ <?php echo htmlspecialchars($cart_message); ?> <a href="cart.php" style="color: white; text-decoration: underline; margin-left: 10px;">View Cart</a>
+      </div>
+    <?php endif; ?>
+
     <?php if (empty($watches)): ?>
       <div class="empty-message">
         <p>No watches available at the moment.</p>
@@ -154,9 +202,12 @@ sqlsrv_close($conn);
               <div class="watch-price">£<?php echo number_format($watch['price'], 0); ?></div>
             </div>
             <div class="watch-card-footer">
-              <button class="enquire-btn cart-btn" data-watch-id="<?php echo $watch['id']; ?>" onclick="addToCart(<?php echo $watch['id']; ?>, this)" style="cursor:pointer;">
-                🛒 Add to Cart
-              </button>
+              <form method="POST" style="flex: 1;">
+                <input type="hidden" name="watch_id" value="<?php echo $watch['id']; ?>">
+                <button type="submit" name="add_to_cart" class="enquire-btn cart-btn" style="cursor:pointer; width: 100%;">
+                  🛒 Add to Cart
+                </button>
+              </form>
               <button class="enquire-btn wishlist-btn" data-watch-id="<?php echo $watch['id']; ?>" onclick="addToWishlist(<?php echo $watch['id']; ?>, this)" style="cursor:pointer;">
                 ❤️ Wishlist
               </button>
@@ -168,11 +219,8 @@ sqlsrv_close($conn);
   </div>
   
   <script>
-    // Load user's wishlist and cart on page load
-    document.addEventListener('DOMContentLoaded', async () => {
-      await loadWishlistStatus();
-      await loadCartStatus();
-    });
+    // Load user's wishlist on page load
+    document.addEventListener('DOMContentLoaded', loadWishlistStatus);
     
     async function loadWishlistStatus() {
       try {
@@ -202,33 +250,7 @@ sqlsrv_close($conn);
       }
     }
     
-    async function loadCartStatus() {
-      try {
-        const userId = <?php echo $_SESSION['user_id']; ?>;
-        const response = await fetch(`cart_api.php?action=get_cart&user_id=${userId}`);
-        const data = await response.json();
-        
-        if (data.success && data.items) {
-          const cartWatchIds = data.items.map(item => item.watch_id);
-          
-          // Update buttons for items already in cart
-          document.querySelectorAll('.cart-btn').forEach(btn => {
-            const watchId = parseInt(btn.getAttribute('data-watch-id'));
-            if (cartWatchIds.includes(watchId)) {
-              btn.innerHTML = '✓ In Cart';
-              btn.style.background = '#27ae60';
-              btn.style.borderColor = '#27ae60';
-              btn.style.color = '#fff';
-              btn.disabled = true;
-              btn.style.cursor = 'not-allowed';
-              btn.style.transform = 'none';
-            }
-          });
-        }
-      } catch (error) {
-        console.error('Error loading cart status:', error);
-      }
-    }
+
     
     async function addToWishlist(watchId, buttonElement) {
       try {
@@ -264,43 +286,7 @@ sqlsrv_close($conn);
         console.error(error);
       }
     }
-    
-    async function addToCart(watchId, buttonElement) {
-      try {
-        const response = await fetch('cart_api.php', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ 
-            action: 'add_to_cart',
-            user_id: <?php echo $_SESSION['user_id']; ?>,
-            watch_id: watchId,
-            quantity: 1
-          })
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-          // Update button state
-          buttonElement.innerHTML = '✓ In Cart';
-          buttonElement.style.background = '#27ae60';
-          buttonElement.style.borderColor = '#27ae60';
-          buttonElement.style.color = '#fff';
-          buttonElement.disabled = true;
-          buttonElement.style.cursor = 'not-allowed';
-          buttonElement.style.transform = 'none';
-          alert('✓ ' + data.message);
-        } else {
-          alert('✗ ' + (data.error || 'Failed to add to cart'));
-        }
-        
-      } catch (error) {
-        alert('✗ Error adding to cart');
-        console.error(error);
-      }
-    }
+
   </script>
 </body>
 </html>
