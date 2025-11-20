@@ -66,7 +66,6 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             from datetime import datetime as dt
             from hashlib import sha256
             import hmac
-            import base64
             
             storage_account = os.environ.get('STORAGE_ACCOUNT_NAME', '')
             storage_key = os.environ.get('STORAGE_ACCOUNT_KEY', '')
