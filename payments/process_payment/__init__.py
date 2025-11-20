@@ -5,11 +5,7 @@ import hashlib
 import time
 from datetime import datetime
 
-app = func.FunctionApp()
-
-@app.function_name(name="ProcessPayment")
-@app.route(route="process_payment", methods=["POST"], auth_level=func.AuthLevel.ANONYMOUS)
-def process_payment(req: func.HttpRequest) -> func.HttpResponse:
+def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Payment processing function triggered.')
 
     try:
@@ -71,7 +67,7 @@ def process_payment(req: func.HttpRequest) -> func.HttpResponse:
         # Simulate payment processing
         # In a real scenario, this would integrate with a payment gateway like Stripe, PayPal, etc.
         
-        # For demo purposes, always succeed (you can add logic to simulate failures)
+        # For demo purposes, always succeed
         response_data = {
             'success': True,
             'transaction_id': transaction_id,
