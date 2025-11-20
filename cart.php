@@ -140,6 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <a href="index.php">Home</a>
             <a href="catalog.php">Browse Watches</a>
             <a href="wishlist.php">Wishlist</a>
+            <a href="my_orders.php">📦 My Orders</a>
             <a href="logout.php">Log Out</a>
         </div>
     </div>
@@ -312,9 +313,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         
         function proceedToCheckout() {
-            alert('Checkout functionality will be implemented soon!\n\nTotal: £' + formatPrice(cartData.total));
-            // TODO: Redirect to checkout page
-            // window.location.href = 'checkout.php';
+            window.location.href = 'checkout.php';
         }
         
         function formatPrice(price) {

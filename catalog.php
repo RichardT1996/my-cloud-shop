@@ -165,6 +165,7 @@ sqlsrv_close($conn);
       <a href="index.php">Home</a>
       <a href="wishlist.php">💝 My Wishlist</a>
       <a href="cart.php">🛒 Cart</a>
+      <a href="my_orders.php">📦 My Orders</a>
       <?php if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@gmail.com'): ?>
         <a href="admin_dashboard.php">Manage Products</a>
       <?php endif; ?>
