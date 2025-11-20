@@ -10,7 +10,6 @@ if (!isset($_SESSION['user_id'])) {
 
 // Handle add to cart action
 $cart_message = '';
-$cart_error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
     $watch_id = (int)$_POST['watch_id'];
     $user_id = $_SESSION['user_id'];
@@ -42,8 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
                 if ($updateStmt !== false) {
                     $cart_message = 'Cart updated! Quantity increased.';
                     sqlsrv_free_stmt($updateStmt);
-                } else {
-                    $cart_error = 'Failed to update cart: ' . print_r(sqlsrv_errors(), true);
                 }
             } else {
                 // Insert new item
@@ -53,17 +50,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
                 if ($insertStmt !== false) {
                     $cart_message = 'Added to cart successfully!';
                     sqlsrv_free_stmt($insertStmt);
-                } else {
-                    $cart_error = 'Failed to add to cart: ' . print_r(sqlsrv_errors(), true);
                 }
             }
             sqlsrv_free_stmt($checkStmt);
-        } else {
-            $cart_error = 'Database query error: ' . print_r(sqlsrv_errors(), true);
         }
         sqlsrv_close($conn);
-    } else {
-        $cart_error = 'Database connection failed: ' . print_r(sqlsrv_errors(), true);
     }
 }
 
@@ -190,12 +181,6 @@ sqlsrv_close($conn);
     <?php if ($cart_message): ?>
       <div style="background: #27ae60; color: white; padding: 15px 30px; margin-bottom: 20px; font-size: 13px; letter-spacing: 1px; border: 1px solid #229954; text-align: center;">
         ✓ <?php echo htmlspecialchars($cart_message); ?> <a href="cart.php" style="color: white; text-decoration: underline; margin-left: 10px;">View Cart</a>
-      </div>
-    <?php endif; ?>
-    
-    <?php if ($cart_error): ?>
-      <div style="background: #c0392b; color: white; padding: 15px 30px; margin-bottom: 20px; font-size: 13px; letter-spacing: 1px; border: 1px solid #a93226; text-align: center;">
-        ✗ <?php echo htmlspecialchars($cart_error); ?>
       </div>
     <?php endif; ?>
 
