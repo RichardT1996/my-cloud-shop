@@ -86,9 +86,9 @@ sqlsrv_close($conn);
         .container { max-width: 1400px; margin: 60px auto; padding: 0 40px; }
         .page-title { font-size: 2.5em; font-weight: 300; letter-spacing: 3px; margin-bottom: 15px; }
         .page-subtitle { color: #888; margin-bottom: 40px; font-size: 13px; letter-spacing: 1px; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 50px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 50px; }
         .stat-card { background: #111; border: 1px solid #222; padding: 25px; text-align: center; }
-        .stat-value { font-size: 2.5em; font-weight: 300; color: #27ae60; margin-bottom: 10px; }
+        .stat-value { font-size: 2.5em; font-weight: 300; color: #27ae60; margin-bottom: 10px; word-break: break-word; }
         .stat-label { color: #666; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
         .filters { display: flex; gap: 15px; margin-bottom: 30px; align-items: center; }
         .filter-label { color: #888; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
