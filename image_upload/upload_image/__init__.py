@@ -63,7 +63,10 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         # Upload to Azure Blob Storage using REST API
         try:
             import requests
-            from datetime import datetime
+            from datetime import datetime as dt
+            from hashlib import sha256
+            import hmac
+            import base64
             
             storage_account = os.environ.get('STORAGE_ACCOUNT_NAME', '')
             storage_key = os.environ.get('STORAGE_ACCOUNT_KEY', '')
@@ -77,20 +80,13 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             blob_url = f"https://{storage_account}.blob.core.windows.net/{container_name}/{unique_filename}"
             
             # Prepare headers for blob upload
-            from hashlib import sha256
-            import hmac
-            
-            # Simplified: Use SAS token or just upload via REST
-            # For now, let's use the Put Blob REST API with Shared Key authentication
-            
-            date_str = datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT')
+            date_str = dt.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT')
             content_length = len(image_bytes)
             
             # Build string to sign
             string_to_sign = f"PUT\n\n\n{content_length}\n\nimage/jpeg\n\n\n\n\n\n\nx-ms-blob-type:BlockBlob\nx-ms-date:{date_str}\nx-ms-version:2021-08-06\n/{storage_account}/{container_name}/{unique_filename}"
             
             # Sign the request
-            import base64
             key_bytes = base64.b64decode(storage_key)
             signature = base64.b64encode(hmac.new(key_bytes, string_to_sign.encode('utf-8'), sha256).digest()).decode()
             
