@@ -68,8 +68,8 @@ sqlsrv_close($conn);
     .user-bar { background: #111; color: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; }
     .user-bar .user-info { font-size: 13px; color: #999; font-weight: 300; }
     .user-bar .user-info strong { color: #fff; font-weight: 400; }
-    .user-bar a { color: #fff; text-decoration: none; padding: 8px 20px; background: transparent; border: 1px solid #444; border-radius: 0; font-size: 12px; font-weight: 400; transition: all 0.3s ease; margin-left: 10px; letter-spacing: 1px; text-transform: uppercase; }
-    .user-bar a:hover { background: #fff; color: #000; border-color: #fff; }
+    .user-bar a { color: #fff; text-decoration: none; padding: 10px 24px; background: transparent; border: 1px solid #444; border-radius: 0; font-size: 11px; font-weight: 400; transition: all 0.3s ease; margin-left: 10px; letter-spacing: 1.5px; text-transform: uppercase; }
+    .user-bar a:hover { background: #fff; color: #000; border-color: #fff; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(255,255,255,0.1); }
     .container { max-width: 1400px; margin: 60px auto; padding: 0 40px; }
     .catalog-header { text-align: center; margin-bottom: 60px; padding-bottom: 30px; border-bottom: 1px solid #222; }
     .catalog-header h2 { color: #fff; margin-bottom: 15px; font-size: 2.5em; font-weight: 300; letter-spacing: 3px; text-transform: uppercase; }
@@ -84,13 +84,18 @@ sqlsrv_close($conn);
     .watch-name { font-size: 18px; color: #fff; margin-bottom: 15px; font-weight: 400; line-height: 1.4; letter-spacing: 0.5px; }
     .watch-description { color: #666; font-size: 13px; margin-bottom: 20px; line-height: 1.6; font-weight: 300; }
     .watch-price { font-size: 20px; color: #fff; font-weight: 300; letter-spacing: 1px; }
-    .watch-card-footer { padding: 0 30px 30px 30px; background: #111; }
-    .enquire-btn { display: block; width: 100%; padding: 12px; background: transparent; border: 1px solid #444; color: #fff; text-align: center; text-decoration: none; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s ease; font-weight: 400; }
-    .enquire-btn:hover { background: #fff; color: #000; border-color: #fff; }
+    .watch-card-footer { padding: 0 30px 30px 30px; background: #111; display: flex; gap: 10px; }
+    .enquire-btn { display: block; flex: 1; padding: 14px 20px; background: transparent; border: 1px solid #444; color: #fff; text-align: center; text-decoration: none; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s ease; font-weight: 400; }
+    .enquire-btn:hover { background: #fff; color: #000; border-color: #fff; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,255,255,0.15); }
+    .wishlist-btn { background: #1a1a1a; border-color: #555; }
+    .wishlist-btn:hover { background: #e74c3c; border-color: #e74c3c; color: #fff; }
+    .wishlist-btn:disabled { opacity: 0.6; }
+    .enquire-now-btn { background: #1a1a1a; border-color: #3498db; color: #3498db; }
+    .enquire-now-btn:hover { background: #3498db; border-color: #3498db; color: #fff; }
     .empty-message { text-align: center; padding: 100px 20px; color: #666; }
     .empty-message p { font-size: 18px; margin-bottom: 20px; font-weight: 300; letter-spacing: 1px; }
-    .btn { display: inline-block; background: transparent; border: 1px solid #444; color: #fff; padding: 12px 30px; text-decoration: none; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s ease; font-weight: 400; }
-    .btn:hover { background: #fff; color: #000; border-color: #fff; }
+    .btn { display: inline-block; background: transparent; border: 1px solid #444; color: #fff; padding: 14px 32px; text-decoration: none; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s ease; font-weight: 400; }
+    .btn:hover { background: #fff; color: #000; border-color: #fff; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,255,255,0.15); }
   </style>
 </head>
 <body>
@@ -104,8 +109,8 @@ sqlsrv_close($conn);
       Welcome, <strong><?php echo htmlspecialchars($_SESSION['user_name']); ?></strong>
     </div>
     <div>
-      <a href="index.php" style="background:#3498db; margin-right:8px;">Home</a>
-      <a href="wishlist.php" style="background:#e74c3c; margin-right:8px;">💝 My Wishlist</a>
+      <a href="index.php">Home</a>
+      <a href="wishlist.php">💝 My Wishlist</a>
       <?php if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@gmail.com'): ?>
         <a href="admin_dashboard.php">Manage Products</a>
       <?php endif; ?>
@@ -145,10 +150,10 @@ sqlsrv_close($conn);
               <div class="watch-price">£<?php echo number_format($watch['price'], 0); ?></div>
             </div>
             <div class="watch-card-footer">
-              <button class="enquire-btn wishlist-btn" data-watch-id="<?php echo $watch['id']; ?>" onclick="addToWishlist(<?php echo $watch['id']; ?>, this)" style="border:none;cursor:pointer;">
+              <button class="enquire-btn wishlist-btn" data-watch-id="<?php echo $watch['id']; ?>" onclick="addToWishlist(<?php echo $watch['id']; ?>, this)" style="cursor:pointer;">
                 ❤️ Add to Wishlist
               </button>
-              <a href="#" class="enquire-btn" style="background:#3498db;margin-left:10px;">Enquire Now</a>
+              <a href="#" class="enquire-btn enquire-now-btn">Enquire Now</a>
             </div>
           </div>
         <?php endforeach; ?>
@@ -174,8 +179,10 @@ sqlsrv_close($conn);
               btn.innerHTML = '✓ In Wishlist';
               btn.style.background = '#27ae60';
               btn.style.borderColor = '#27ae60';
+              btn.style.color = '#fff';
               btn.disabled = true;
               btn.style.cursor = 'not-allowed';
+              btn.style.transform = 'none';
             }
           });
         }
@@ -204,8 +211,10 @@ sqlsrv_close($conn);
           buttonElement.innerHTML = '✓ In Wishlist';
           buttonElement.style.background = '#27ae60';
           buttonElement.style.borderColor = '#27ae60';
+          buttonElement.style.color = '#fff';
           buttonElement.disabled = true;
           buttonElement.style.cursor = 'not-allowed';
+          buttonElement.style.transform = 'none';
           alert('✓ ' + data.message);
         } else {
           alert('✗ ' + (data.error || 'Failed to add to wishlist'));

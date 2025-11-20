@@ -24,8 +24,8 @@ $user_name = $_SESSION['user_name'] ?? 'User';
         .user-bar { background: #111; color: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; }
         .user-bar .user-info { font-size: 13px; color: #999; font-weight: 300; }
         .user-bar .user-info strong { color: #fff; font-weight: 400; }
-        .user-bar a { color: #fff; text-decoration: none; padding: 8px 20px; background: transparent; border: 1px solid #444; border-radius: 0; font-size: 12px; font-weight: 400; transition: all 0.3s ease; margin-left: 10px; letter-spacing: 1px; text-transform: uppercase; }
-        .user-bar a:hover { background: #fff; color: #000; border-color: #fff; }
+        .user-bar a { color: #fff; text-decoration: none; padding: 10px 24px; background: transparent; border: 1px solid #444; border-radius: 0; font-size: 11px; font-weight: 400; transition: all 0.3s ease; margin-left: 10px; letter-spacing: 1.5px; text-transform: uppercase; }
+        .user-bar a:hover { background: #fff; color: #000; border-color: #fff; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(255,255,255,0.1); }
         .container { max-width: 1400px; margin: 60px auto; padding: 0 40px; }
         .catalog-header { text-align: center; margin-bottom: 60px; padding-bottom: 30px; border-bottom: 1px solid #222; }
         .catalog-header h2 { color: #fff; margin-bottom: 15px; font-size: 2.5em; font-weight: 300; letter-spacing: 3px; text-transform: uppercase; }
@@ -41,11 +41,11 @@ $user_name = $_SESSION['user_name'] ?? 'User';
         .watch-description { color: #666; font-size: 13px; margin-bottom: 20px; line-height: 1.6; font-weight: 300; }
         .watch-price { font-size: 20px; color: #fff; font-weight: 300; letter-spacing: 1px; margin-bottom: 15px; }
         .watch-meta { font-size: 11px; color: #555; margin-bottom: 15px; letter-spacing: 1px; }
-        .card-actions { display: flex; gap: 10px; }
-        .btn { display: inline-block; padding: 12px 30px; background: transparent; border: 1px solid #444; color: #fff; text-decoration: none; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s ease; font-weight: 400; cursor: pointer; text-align: center; }
-        .btn:hover { background: #fff; color: #000; border-color: #fff; }
-        .btn-danger { border-color: #c0392b; color: #c0392b; }
-        .btn-danger:hover { background: #c0392b; color: #fff; border-color: #c0392b; }
+        .card-actions { display: flex; gap: 10px; margin-top: 20px; }
+        .btn { display: inline-block; padding: 14px 32px; background: transparent; border: 1px solid #444; color: #fff; text-decoration: none; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s ease; font-weight: 400; cursor: pointer; text-align: center; }
+        .btn:hover { background: #fff; color: #000; border-color: #fff; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,255,255,0.15); }
+        .btn-danger { border-color: #e74c3c; color: #e74c3c; background: #1a1a1a; }
+        .btn-danger:hover { background: #e74c3c; color: #fff; border-color: #e74c3c; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(231,76,60,0.3); }
         .empty-state { text-align: center; padding: 100px 20px; color: #666; background: #111; border: 1px solid #222; margin-top: 40px; }
         .empty-state h2 { color: #fff; margin-bottom: 15px; font-weight: 300; letter-spacing: 2px; }
         .empty-state p { font-size: 14px; margin-bottom: 30px; font-weight: 300; letter-spacing: 1px; color: #888; }
