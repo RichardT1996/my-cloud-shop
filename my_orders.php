@@ -215,8 +215,8 @@ sqlsrv_close($conn);
                 itemsHtml += `
                     <div class="item-row">
                         <div class="item-info">
-                            <div class="item-brand">${item.brand}</div>
-                            <div class="item-model">${item.model}</div>
+                            <div class="item-brand">${item.watch_brand}</div>
+                            <div class="item-model">${item.watch_name}</div>
                             <div class="item-qty">Quantity: ${item.quantity}</div>
                         </div>
                         <div class="item-price">£${parseFloat(item.subtotal).toFixed(2)}</div>
