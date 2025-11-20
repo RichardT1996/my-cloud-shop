@@ -53,7 +53,7 @@ sqlsrv_free_stmt($stmt);
 
 // Fetch order items
 $sql = "SELECT * FROM order_items WHERE order_id = ?";
-$stmt = sqlsrv_query($conn, $sql, array($order['order_id']));
+$stmt = sqlsrv_query($conn, $sql, array($order['id']));
 
 $items = array();
 if ($stmt !== false) {

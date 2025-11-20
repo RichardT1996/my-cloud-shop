@@ -27,10 +27,10 @@ if (!$conn) {
 
 // Fetch user's orders with order items
 $sql = "SELECT o.*, 
-        (SELECT COUNT(*) FROM order_items WHERE order_id = o.order_id) as item_count
+        (SELECT COUNT(*) FROM order_items WHERE order_id = o.id) as item_count
         FROM orders o 
         WHERE o.user_id = ? 
-        ORDER BY o.order_date DESC";
+        ORDER BY o.created_at DESC";
 $stmt = sqlsrv_query($conn, $sql, array($user_id));
 
 $orders = array();
@@ -143,7 +143,7 @@ sqlsrv_close($conn);
         <?php else: ?>
             <div class="orders-grid">
                 <?php foreach ($orders as $order): 
-                    $order_date = $order['order_date'];
+                    $order_date = $order['created_at'];
                     $formatted_date = $order_date->format('d M Y, H:i');
                     $status_class = 'status-' . strtolower($order['status']);
                 ?>

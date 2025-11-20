@@ -108,8 +108,8 @@ sqlsrv_close($conn);
                     <span class="detail-value"><?php echo htmlspecialchars(ucfirst($order['status'])); ?></span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">Shipping To</span>
-                    <span class="detail-value"><?php echo htmlspecialchars($order['shipping_name']); ?></span>
+                    <span class="detail-label">Shipping Address</span>
+                    <span class="detail-value"><?php echo htmlspecialchars($order['shipping_address'] . ', ' . $order['shipping_city']); ?></span>
                 </div>
             </div>
             

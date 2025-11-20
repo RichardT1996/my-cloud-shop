@@ -33,10 +33,10 @@ if (!$conn) {
 
 // Fetch all orders with user information
 $sql = "SELECT o.*, u.name as customer_name, u.email as customer_email,
-        (SELECT COUNT(*) FROM order_items WHERE order_id = o.order_id) as item_count
+        (SELECT COUNT(*) FROM order_items WHERE order_id = o.id) as item_count
         FROM orders o 
-        INNER JOIN users u ON o.user_id = u.user_id 
-        ORDER BY o.order_date DESC";
+        INNER JOIN shopusers u ON o.user_id = u.id 
+        ORDER BY o.created_at DESC";
 $stmt = sqlsrv_query($conn, $sql);
 
 $orders = array();
@@ -209,7 +209,7 @@ sqlsrv_close($conn);
             </thead>
             <tbody id="ordersTableBody">
                 <?php foreach ($orders as $order): 
-                    $order_date = $order['order_date'];
+                    $order_date = $order['created_at'];
                     $formatted_date = $order_date->format('d M Y');
                     $status_class = 'status-' . strtolower($order['status']);
                 ?>
