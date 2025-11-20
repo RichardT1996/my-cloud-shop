@@ -251,20 +251,41 @@ sqlsrv_close($conn);
                     <h3>Payment Method</h3>
                     <div class="payment-methods">
                         <div class="payment-option">
-                            <input type="radio" id="card" name="payment_method" value="credit_card" required>
+                            <input type="radio" id="card" name="payment_method" value="credit_card" required onchange="showCardFields('credit')">
                             <label for="card">💳 Credit Card</label>
                         </div>
                         <div class="payment-option">
-                            <input type="radio" id="debit" name="payment_method" value="debit_card">
+                            <input type="radio" id="debit" name="payment_method" value="debit_card" onchange="showCardFields('debit')">
                             <label for="debit">💳 Debit Card</label>
                         </div>
                         <div class="payment-option">
-                            <input type="radio" id="paypal" name="payment_method" value="paypal">
+                            <input type="radio" id="paypal" name="payment_method" value="paypal" onchange="hideCardFields()">
                             <label for="paypal">🅿️ PayPal</label>
                         </div>
                         <div class="payment-option">
-                            <input type="radio" id="klarna" name="payment_method" value="klarna">
+                            <input type="radio" id="klarna" name="payment_method" value="klarna" onchange="hideCardFields()">
                             <label for="klarna">🔷 Klarna</label>
+                        </div>
+                    </div>
+                    
+                    <div id="cardFields" style="display: none; margin-top: 25px; padding-top: 25px; border-top: 1px solid #222;">
+                        <div class="form-group">
+                            <label for="card_number">Card Number *</label>
+                            <input type="text" id="card_number" name="card_number" placeholder="1234 5678 9012 3456" maxlength="19">
+                        </div>
+                        <div class="form-group">
+                            <label for="card_name">Cardholder Name *</label>
+                            <input type="text" id="card_name" name="card_name" placeholder="John Smith">
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label for="card_expiry">Expiry Date *</label>
+                                <input type="text" id="card_expiry" name="card_expiry" placeholder="MM/YY" maxlength="5">
+                            </div>
+                            <div class="form-group">
+                                <label for="card_cvv">CVV *</label>
+                                <input type="text" id="card_cvv" name="card_cvv" placeholder="123" maxlength="4">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -295,5 +316,56 @@ sqlsrv_close($conn);
             </div>
         </div>
     </div>
+    
+    <script>
+        function showCardFields(type) {
+            const cardFields = document.getElementById('cardFields');
+            cardFields.style.display = 'block';
+            
+            // Make card fields required
+            document.getElementById('card_number').required = true;
+            document.getElementById('card_name').required = true;
+            document.getElementById('card_expiry').required = true;
+            document.getElementById('card_cvv').required = true;
+        }
+        
+        function hideCardFields() {
+            const cardFields = document.getElementById('cardFields');
+            cardFields.style.display = 'none';
+            
+            // Make card fields optional
+            document.getElementById('card_number').required = false;
+            document.getElementById('card_name').required = false;
+            document.getElementById('card_expiry').required = false;
+            document.getElementById('card_cvv').required = false;
+            
+            // Clear values
+            document.getElementById('card_number').value = '';
+            document.getElementById('card_name').value = '';
+            document.getElementById('card_expiry').value = '';
+            document.getElementById('card_cvv').value = '';
+        }
+        
+        // Auto-format card number (add spaces every 4 digits)
+        document.getElementById('card_number').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formattedValue;
+        });
+        
+        // Auto-format expiry date (MM/YY)
+        document.getElementById('card_expiry').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.slice(0, 2) + '/' + value.slice(2, 4);
+            }
+            e.target.value = value;
+        });
+        
+        // Only allow numbers in CVV
+        document.getElementById('card_cvv').addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+    </script>
 </body>
 </html>
