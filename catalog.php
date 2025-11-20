@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
     $watch_id = (int)$_POST['watch_id'];
     $user_id = $_SESSION['user_id'];
     
-    $serverName = "tcp:mydatabase-replica.database.windows.net,1433";
+    $serverName = "tcp:mycardiffmet1.database.windows.net,1433";
     $connectionOptions = array(
         "Database" => "myDatabase",
         "Uid" => "myadmin",

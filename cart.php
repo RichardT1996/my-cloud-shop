@@ -11,7 +11,7 @@ $user_name = $_SESSION['user_name'] ?? 'User';
 $user_id = $_SESSION['user_id'];
 
 // Database connection
-$serverName = "tcp:mydatabase-replica.database.windows.net,1433";
+$serverName = "tcp:mycardiffmet1.database.windows.net,1433";
 $connectionOptions = array(
     "Database" => "myDatabase",
     "Uid" => "myadmin",
@@ -170,7 +170,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php
     // Fetch cart items from database
     $user_id = $_SESSION['user_id'];
-    $serverName = "tcp:mydatabase-replica.database.windows.net,1433";
+    $serverName = "tcp:mycardiffmet1.database.windows.net,1433";
     $connectionOptions = array(
         "Database" => "myDatabase",
         "Uid" => "myadmin",

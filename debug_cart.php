@@ -11,7 +11,7 @@ echo "<h2>Cart Debug Info</h2>";
 echo "<p>User ID: $user_id</p>";
 echo "<p>User Name: " . ($_SESSION['user_name'] ?? 'N/A') . "</p>";
 
-$serverName = "tcp:mydatabase-replica.database.windows.net,1433";
+$serverName = "tcp:mycardiffmet1.database.windows.net,1433";
 $connectionOptions = array(
     "Database" => "myDatabase",
     "Uid" => "myadmin",
