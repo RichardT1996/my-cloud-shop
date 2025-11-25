@@ -95,7 +95,7 @@ session_start();
       <div class="watch-grid">
         <div class="watch-card">
           <div class="watch-image-container">
-            <img src="images/rolex-submariner.jpg" alt="Rolex Submariner" class="watch-image" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=&quot;width:100%;height:350px;background:#1a1a1a;display:flex;align-items:center;justify-content:center;color:#666;font-size:14px;letter-spacing:2px;&quot;>ROLEX</div>';">
+            <img src="/images/rolex-submariner.jpg" alt="Rolex Submariner" class="watch-image" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=&quot;width:100%;height:350px;background:#1a1a1a;display:flex;align-items:center;justify-content:center;color:#666;font-size:14px;letter-spacing:2px;&quot;>ROLEX</div>';">
           </div>
           <div class="watch-info">
             <div class="watch-brand">Rolex</div>
