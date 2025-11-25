@@ -50,7 +50,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         # Delete from wishlist
         cursor.execute("""
             DELETE FROM wishlist 
-            WHERE user_id = ? AND watch_id = ?
+            WHERE user_id = %s AND watch_id = %s
         """, (user_id, watch_id))
         
         rows_affected = cursor.rowcount
@@ -124,29 +124,22 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         )
 
 def get_db_connection():
-    """Create database connection using pyodbc"""
-    import pyodbc
+    """Create database connection using pymysql"""
+    import pymysql
     
-    server = os.environ.get('DB_SERVER', '')
-    database = os.environ.get('DB_NAME', '')
-    username = os.environ.get('DB_USER', '')
-    password = os.environ.get('DB_PASS', '')
+    host = os.environ.get('DB_HOST', 'localhost')
+    database = os.environ.get('DB_NAME', 'shopsphere_db')
+    username = os.environ.get('DB_USER', 'root')
+    password = os.environ.get('DB_PASS', 'password')
+    port = int(os.environ.get('DB_PORT', '3306'))
     
-    # Azure SQL connection string format
-    server_clean = server.replace('tcp:', '').replace(',1433', '').strip()
+    logging.info(f'Connecting to MySQL at {host}:{port}')
     
-    logging.info(f'Connecting to server: {server_clean}')
-    
-    # Use ODBC Driver 18 with TrustServerCertificate=yes for Azure SQL
-    connection_string = (
-        'DRIVER={ODBC Driver 18 for SQL Server};'
-        f'SERVER={server_clean};'
-        f'DATABASE={database};'
-        f'UID={username};'
-        f'PWD={password};'
-        'Encrypt=yes;'
-        'TrustServerCertificate=yes;'
-        'Connection Timeout=30;'
+    return pymysql.connect(
+        host=host,
+        port=port,
+        user=username,
+        password=password,
+        database=database,
+        cursorclass=pymysql.cursors.DictCursor
     )
-    
-    return pyodbc.connect(connection_string)

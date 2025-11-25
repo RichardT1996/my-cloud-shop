@@ -37,7 +37,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         
         # Query user
         cursor.execute(
-            "SELECT id, name, email, password FROM shopusers WHERE email = ?",
+            "SELECT id, name, email, password FROM shopusers WHERE email = %s",
             (email,)
         )
         user = cursor.fetchone()
@@ -55,12 +55,12 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         user_data = {
             "success": True,
             "user": {
-                "id": user[0],
-                "name": user[1],
-                "email": user[2],
+                "id": user['id'],
+                "name": user['name'],
+                "email": user['email'],
                 "is_admin": (email == "admin@gmail.com")
             },
-            "hashed_password": user[3]
+            "hashed_password": user['password']
         }
         
         logging.info(f'Login successful for: {email}')
@@ -81,30 +81,22 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         )
 
 def get_db_connection():
-    """Create database connection using pyodbc"""
-    import pyodbc
+    """Create database connection using pymysql"""
+    import pymysql
     
-    server = os.environ.get('DB_SERVER', '')
-    database = os.environ.get('DB_NAME', '')
-    username = os.environ.get('DB_USER', '')
-    password = os.environ.get('DB_PASS', '')
+    host = os.environ.get('DB_HOST', 'localhost')
+    database = os.environ.get('DB_NAME', 'shopsphere_db')
+    username = os.environ.get('DB_USER', 'root')
+    password = os.environ.get('DB_PASS', 'password')
+    port = int(os.environ.get('DB_PORT', '3306'))
     
-    # Azure SQL connection string format
-    # Server is typically: mycardiffmet1.database.windows.net
-    server_clean = server.replace('tcp:', '').replace(',1433', '').strip()
+    logging.info(f'Connecting to MySQL at {host}:{port}')
     
-    logging.info(f'Connecting to server: {server_clean}')
-    
-    # Use ODBC Driver 18 with TrustServerCertificate=yes for Azure SQL
-    connection_string = (
-        'DRIVER={ODBC Driver 18 for SQL Server};'
-        f'SERVER={server_clean};'
-        f'DATABASE={database};'
-        f'UID={username};'
-        f'PWD={password};'
-        'Encrypt=yes;'
-        'TrustServerCertificate=yes;'
-        'Connection Timeout=30;'
+    return pymysql.connect(
+        host=host,
+        port=port,
+        user=username,
+        password=password,
+        database=database,
+        cursorclass=pymysql.cursors.DictCursor
     )
-    
-    return pyodbc.connect(connection_string)

@@ -59,21 +59,21 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                    wt.name, wt.brand, wt.price, wt.image_url
             FROM wishlist w
             INNER JOIN watches wt ON w.watch_id = wt.id
-            WHERE w.user_id = ?
+            WHERE w.user_id = %s
             ORDER BY w.added_at DESC
         """, (user_id,))
         
         items = []
         for row in cursor.fetchall():
             items.append({
-                "id": row[0],
-                "user_id": row[1],
-                "watch_id": row[2],
-                "added_at": row[3].isoformat() if row[3] else None,
-                "name": row[4],
-                "brand": row[5],
-                "price": float(row[6]) if row[6] else 0,
-                "image_url": row[7]
+                "id": row['id'],
+                "user_id": row['user_id'],
+                "watch_id": row['watch_id'],
+                "added_at": row['added_at'].isoformat() if row['added_at'] else None,
+                "name": row['name'],
+                "brand": row['brand'],
+                "price": float(row['price']) if row['price'] else 0,
+                "image_url": row['image_url']
             })
         
         conn.close()
@@ -114,29 +114,22 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         )
 
 def get_db_connection():
-    """Create database connection using pyodbc"""
-    import pyodbc
+    """Create database connection using pymysql"""
+    import pymysql
     
-    server = os.environ.get('DB_SERVER', '')
-    database = os.environ.get('DB_NAME', '')
-    username = os.environ.get('DB_USER', '')
-    password = os.environ.get('DB_PASS', '')
+    host = os.environ.get('DB_HOST', 'localhost')
+    database = os.environ.get('DB_NAME', 'shopsphere_db')
+    username = os.environ.get('DB_USER', 'root')
+    password = os.environ.get('DB_PASS', 'password')
+    port = int(os.environ.get('DB_PORT', '3306'))
     
-    # Azure SQL connection string format
-    server_clean = server.replace('tcp:', '').replace(',1433', '').strip()
+    logging.info(f'Connecting to MySQL at {host}:{port}')
     
-    logging.info(f'Connecting to server: {server_clean}')
-    
-    # Use ODBC Driver 18 with TrustServerCertificate=yes for Azure SQL
-    connection_string = (
-        'DRIVER={ODBC Driver 18 for SQL Server};'
-        f'SERVER={server_clean};'
-        f'DATABASE={database};'
-        f'UID={username};'
-        f'PWD={password};'
-        'Encrypt=yes;'
-        'TrustServerCertificate=yes;'
-        'Connection Timeout=30;'
+    return pymysql.connect(
+        host=host,
+        port=port,
+        user=username,
+        password=password,
+        database=database,
+        cursorclass=pymysql.cursors.DictCursor
     )
-    
-    return pyodbc.connect(connection_string)
