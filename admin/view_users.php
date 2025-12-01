@@ -62,7 +62,7 @@ try {
   <nav class="nav">
     <ul>
       <li><a href="/admin/index.php">Home</a></li>
-      <li><a href="/admin/catalog.php">Catalog</a></li>
+      <li><a href="/php/catalog.php">Catalog</a></li>
       <li><a href="/admin/admin_dashboard.php">Manage Products</a></li>
       <li><a href="/admin/view_users.php" class="active">Users</a></li>
       <li><a href="/admin/admin_orders.php">Orders</a></li>

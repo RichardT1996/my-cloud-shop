@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_id'])) {
 
 // Check if user is admin
 if ($_SESSION['user_email'] !== 'admin@gmail.com') {
-    header('Location: /admin/catalog.php');
+    header('Location: /admin/php/catalog.php');
     exit();
 }
 
