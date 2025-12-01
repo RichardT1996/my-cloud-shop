@@ -14,8 +14,8 @@ if (!isset($_SESSION['user_id'])) {
 header('Content-Type: application/json');
 
 // Database connection
-$server = "tcp:mycardiffmet1.database.windows.net,1433";
-$database = "myDatabase";
+$server = "shopspshere-dbserver.database.windows.net";
+$database = "shopspheredb";
 $username = "myadmin";
 $password = "password123!";
 

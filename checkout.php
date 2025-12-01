@@ -10,9 +10,9 @@ $user_name = $_SESSION['user_name'] ?? 'User';
 $user_id = $_SESSION['user_id'];
 
 // Database connection
-$serverName = "tcp:mycardiffmet1.database.windows.net,1433";
+$serverName = "tcp:shopspshere-dbserver.database.windows.net,1433";
 $connectionOptions = array(
-    "Database" => "myDatabase",
+    "Database" => "shopspheredb",
     "Uid" => "myadmin",
     "PWD" => "password123!",
     "Encrypt" => 1,
@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
             'user_id' => $user_id
         );
         
-        $payment_url = 'https://payments-enfzg2cue2ddggb6.norwayeast-01.azurewebsites.net/api/process_payment';
+        $payment_url = 'https://shopsphere-payment-gthwgxcagaerevcm.swedencentral-01.azurewebsites.net/api/process_payment';
         $payment_options = array(
             'http' => array(
                 'method' => 'POST',

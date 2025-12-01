@@ -23,9 +23,9 @@ if (empty($order_number)) {
 }
 
 // Database connection
-$serverName = "tcp:mycardiffmet1.database.windows.net,1433";
+$serverName = "tcp:shopspshere-dbserver.database.windows.net,1433";
 $connectionOptions = array(
-    "Database" => "myDatabase",
+    "Database" => "shopspheredb",
     "Uid" => "myadmin",
     "PWD" => "password123!",
     "Encrypt" => 1,

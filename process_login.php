@@ -16,7 +16,7 @@ if ($email === '' || $password === '') {
 }
 
 // Call Azure Function App for authentication
-$authUrl = 'https://user-authentication-agddcraseuh4dtf0.norwayeast-01.azurewebsites.net/api/login';
+$authUrl = 'https://shopsphere-authentication-hgcqhsergpe4cuhq.swedencentral-01.azurewebsites.net/api/login';
 $authData = json_encode([
     'email' => $email,
     'password' => $password
@@ -39,9 +39,9 @@ if ($response === false || $httpCode !== 200) {
     error_log("Auth API failed: HTTP $httpCode - $curlError. Falling back to local DB.");
     
     // Fallback: DB connection (same settings as process_register.php)
-$serverName = "tcp:mycardiffmet1.database.windows.net,1433";
+$serverName = "tcp:shopspshere-dbserver.database.windows.net,1433";
 $connectionOptions = array(
-    "Database" => "myDatabase",
+    "Database" => "shopspheredb",
     "Uid" => "myadmin",
     "PWD" => "password123!",
     "Encrypt" => 1,

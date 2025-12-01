@@ -1,0 +1,12 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "python",
+    "DB_SERVER": "shopspshere-dbserver.database.windows.net",
+    "DB_NAME": "shopspheredb",
+    "DB_USER": "myadmin",
+    "DB_PASS": "password123!",
+    "AZURE_STORAGE_CONNECTION_STRING": ""
+  }
+}

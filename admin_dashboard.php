@@ -15,9 +15,9 @@ if ($_SESSION['user_email'] !== 'admin@gmail.com') {
 }
 
 // DB connection
-$serverName = "tcp:mycardiffmet1.database.windows.net,1433";
+$serverName = "tcp:shopspshere-dbserver.database.windows.net,1433";
 $connectionOptions = array(
-    "Database" => "myDatabase",
+    "Database" => "shopspheredb",
     "Uid" => "myadmin",
     "PWD" => "password123!",
     "Encrypt" => 1,
@@ -224,7 +224,7 @@ sqlsrv_close($conn);
   </div>
 
   <script>
-    const UPLOAD_API = 'https://image-uploads-cdekethvcudth4hb.norwayeast-01.azurewebsites.net/api/upload_image';
+    const UPLOAD_API = 'https://image-upload-hpdah5cjfteeg9ga.swedencentral-01.azurewebsites.net/api/upload_image';
 
     // Handle image file selection
     document.getElementById('image_file').addEventListener('change', async function(e) {

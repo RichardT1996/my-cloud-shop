@@ -96,7 +96,7 @@ $user_name = $_SESSION['user_name'] ?? 'User';
         async function loadWishlist() {
             try {
                 const userId = <?php echo $_SESSION['user_id']; ?>;
-                const response = await fetch(`https://wishlists-bvgrckbzfmf2gzd9.norwayeast-01.azurewebsites.net/api/get_wishlist?user_id=${userId}`);
+                const response = await fetch(`https://shopsphere-wishlist-akg3awg0dehjfmh4.swedencentral-01.azurewebsites.net/api/get_wishlist?user_id=${userId}`);
                 const data = await response.json();
                 
                 document.getElementById('loading').style.display = 'none';
@@ -178,7 +178,7 @@ $user_name = $_SESSION['user_name'] ?? 'User';
             
             try {
                 const userId = <?php echo $_SESSION['user_id']; ?>;
-                const response = await fetch('https://wishlists-bvgrckbzfmf2gzd9.norwayeast-01.azurewebsites.net/api/remove_from_wishlist', {
+                const response = await fetch('https://shopsphere-wishlist-akg3awg0dehjfmh4.swedencentral-01.azurewebsites.net/api/remove_from_wishlist', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

@@ -17,9 +17,9 @@ $user_name = $_SESSION['user_name'] ?? 'User';
 $user_id = $_SESSION['user_id'];
 
 // Database connection
-$serverName = "tcp:mycardiffmet1.database.windows.net,1433";
+$serverName = "tcp:shopspshere-dbserver.database.windows.net,1433";
 $connectionOptions = array(
-    "Database" => "myDatabase",
+    "Database" => "shopspheredb",
     "Uid" => "myadmin",
     "PWD" => "password123!",
     "Encrypt" => 1,

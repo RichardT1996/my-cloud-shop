@@ -14,9 +14,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
     $watch_id = (int)$_POST['watch_id'];
     $user_id = $_SESSION['user_id'];
     
-    $serverName = "tcp:mycardiffmet1.database.windows.net,1433";
+    $serverName = "tcp:shopspshere-dbserver.database.windows.net,1433";
     $connectionOptions = array(
-        "Database" => "myDatabase",
+        "Database" => "shopspheredb",
         "Uid" => "myadmin",
         "PWD" => "password123!",
         "Encrypt" => 1,
@@ -59,9 +59,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
 }
 
 // DB connection
-$serverName = "tcp:mydatabase-replica.database.windows.net,1433";
+$serverName = "tcp:shopspshere-dbserver.database.windows.net,1433";
 $connectionOptions = array(
-    "Database" => "myDatabase",
+    "Database" => "shopspheredb",
     "Uid" => "myadmin",
     "PWD" => "password123!",
     "Encrypt" => 1,
@@ -239,7 +239,7 @@ sqlsrv_close($conn);
     async function loadWishlistStatus() {
       try {
         const userId = <?php echo $_SESSION['user_id']; ?>;
-        const response = await fetch(`https://wishlists-bvgrckbzfmf2gzd9.norwayeast-01.azurewebsites.net/api/get_wishlist?user_id=${userId}`);
+        const response = await fetch(`https://shopsphere-wishlist-akg3awg0dehjfmh4.swedencentral-01.azurewebsites.net/api/get_wishlist?user_id=${userId}`);
         const data = await response.json();
         
         if (data.success && data.items) {
@@ -268,7 +268,7 @@ sqlsrv_close($conn);
     
     async function addToWishlist(watchId, buttonElement) {
       try {
-        const response = await fetch('https://wishlists-bvgrckbzfmf2gzd9.norwayeast-01.azurewebsites.net/api/add_to_wishlist', {
+        const response = await fetch('https://shopsphere-wishlist-akg3awg0dehjfmh4.swedencentral-01.azurewebsites.net/api/add_to_wishlist', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
