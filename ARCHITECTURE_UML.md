@@ -330,7 +330,7 @@ sequenceDiagram
     
     Browser->>Browser: Convert image to base64
     Browser->>ImageAPI: POST /api/upload_image
-    Note over Browser,ImageAPI: {image: "data:image/jpeg;base64,...",<br/>filename: "rolex-daytona.jpg"}
+    Note over Browser,ImageAPI: image: base64 data, filename: rolex-daytona.jpg
     
     ImageAPI->>ImageAPI: Remove data URL prefix
     ImageAPI->>ImageAPI: Decode base64 to bytes
@@ -338,11 +338,11 @@ sequenceDiagram
     ImageAPI->>BlobStorage: PUT /images/rolex-daytona.jpg
     Note over ImageAPI,BlobStorage: Headers: x-ms-blob-type: BlockBlob<br/>Content-Type: image/jpeg
     BlobStorage-->>ImageAPI: 201 Created
-    ImageAPI-->>Browser: 200 OK {success: true,<br/>url: "https://...blob.core.windows.net/images/rolex-daytona.jpg"}
+    ImageAPI-->>Browser: 200 OK with blob URL
     
     Browser->>ProcessAdmin: POST form data
-    Note over Browser,ProcessAdmin: {name, brand, price, description,<br/>image_url, action: "add"}
-    ProcessAdmin->>Database: INSERT INTO watches<br/>(name, brand, price, description, image_url)
+    Note over Browser,ProcessAdmin: name, brand, price, description, image_url, action=add
+    ProcessAdmin->>Database: INSERT INTO watches
     Database-->>ProcessAdmin: Success, return new watch_id
     ProcessAdmin-->>Browser: Redirect to admin_dashboard.php?success=Watch added
     Browser->>AdminDash: Reload page with success message
