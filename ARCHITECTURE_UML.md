@@ -204,54 +204,65 @@ sequenceDiagram
     participant Browser
     participant LoginPage as login.php
     participant ProcessLogin as process_login.php
-    participant AuthFunc as Authentication Function
+    participant AuthFunc as shopsphere-authentication<br/>POST /api/login
     participant Database as Azure SQL Database
     
     User->>Browser: Enter credentials
     Browser->>LoginPage: Display login form
     User->>LoginPage: Submit email & password
     LoginPage->>ProcessLogin: POST credentials
-    ProcessLogin->>AuthFunc: POST /api/login
-    AuthFunc->>Database: Query shopusers table
-    Database-->>AuthFunc: Return user record
-    AuthFunc->>AuthFunc: Verify password hash
+    ProcessLogin->>AuthFunc: POST https://shopsphere-authentication.../api/login
+    Note over ProcessLogin,AuthFunc: {email, password}
+    AuthFunc->>Database: SELECT FROM shopusers WHERE email=?
+    Database-->>AuthFunc: Return user record with hashed password
+    AuthFunc->>AuthFunc: Verify bcrypt password hash
     alt Authentication Success
-        AuthFunc-->>ProcessLogin: 200 OK + user data
-        ProcessLogin->>ProcessLogin: Create session
+        AuthFunc-->>ProcessLogin: 200 OK {success: true, user_id, name}
+        ProcessLogin->>ProcessLogin: session_start()<br/>Set user_id, user_name, user_email
         ProcessLogin-->>Browser: Redirect to index.php
         Browser->>User: Display home page
     else Authentication Failed
-        AuthFunc-->>ProcessLogin: 401 Unauthorized
-        ProcessLogin-->>Browser: Redirect to login with error
+        AuthFunc-->>ProcessLogin: 401 {success: false, error}
+        ProcessLogin-->>Browser: Redirect to login.php?error=...
         Browser->>User: Display error message
     end
 ```
 
-## 5. Sequence Diagram - Add to Wishlist Flow
+## 5. Sequence Diagram - Wishlist Operations Flow
 
 ```mermaid
 sequenceDiagram
     actor User
     participant Browser
     participant Catalog as catalog.php
-    participant WishlistAPI as Wishlist Function
+    participant GetWishlist as shopsphere-wishlist<br/>GET /api/get_wishlist
+    participant AddWishlist as shopsphere-wishlist<br/>POST /api/add_to_wishlist
+    participant RemoveWishlist as shopsphere-wishlist<br/>POST /api/remove_from_wishlist
     participant Database as Azure SQL Database
     
     User->>Browser: Browse catalog
     Browser->>Catalog: Load page
-    Catalog->>WishlistAPI: GET /api/get_wishlist?user_id=X
-    WishlistAPI->>Database: SELECT FROM wishlist
-    Database-->>WishlistAPI: Return wishlist items
-    WishlistAPI-->>Catalog: Return JSON
-    Catalog->>Browser: Display with heart icons
+    Catalog->>GetWishlist: GET /api/get_wishlist?user_id=1
+    GetWishlist->>Database: SELECT w.*, wt.name, wt.brand, wt.price, wt.image_url<br/>FROM wishlist w JOIN watches wt
+    Database-->>GetWishlist: Return wishlist items with watch details
+    GetWishlist-->>Catalog: 200 OK {success: true, items: [...]}
+    Catalog->>Browser: Display with filled heart icons
     
-    User->>Browser: Click heart icon
-    Browser->>WishlistAPI: POST /api/add_to_wishlist
-    Note over Browser,WishlistAPI: {user_id: X, watch_id: Y}
-    WishlistAPI->>Database: INSERT INTO wishlist
-    Database-->>WishlistAPI: Success
-    WishlistAPI-->>Browser: 200 OK
-    Browser->>User: Update heart icon (filled)
+    User->>Browser: Click empty heart icon
+    Browser->>AddWishlist: POST /api/add_to_wishlist
+    Note over Browser,AddWishlist: {user_id: 1, watch_id: 5}
+    AddWishlist->>Database: INSERT INTO wishlist (user_id, watch_id, added_at)
+    Database-->>AddWishlist: Success
+    AddWishlist-->>Browser: 200 OK {success: true, message}
+    Browser->>User: Update heart icon to filled
+    
+    User->>Browser: Click filled heart icon
+    Browser->>RemoveWishlist: POST /api/remove_from_wishlist
+    Note over Browser,RemoveWishlist: {user_id: 1, watch_id: 5}
+    RemoveWishlist->>Database: DELETE FROM wishlist<br/>WHERE user_id=? AND watch_id=?
+    Database-->>RemoveWishlist: Success
+    RemoveWishlist-->>Browser: 200 OK {success: true, message}
+    Browser->>User: Update heart icon to empty
 ```
 
 ## 6. Sequence Diagram - Checkout & Payment Flow
@@ -262,32 +273,41 @@ sequenceDiagram
     participant Browser
     participant Cart as cart.php
     participant Checkout as checkout.php
-    participant PaymentAPI as Payment Function
+    participant PaymentAPI as shopsphere-payment<br/>POST /api/process_payment
     participant Database as Azure SQL Database
     
     User->>Browser: View cart
-    Browser->>Cart: Display cart items
+    Browser->>Cart: Load cart items from database
+    Cart->>Database: SELECT c.*, w.name, w.brand, w.price, w.image_url<br/>FROM cart c JOIN watches w
+    Database-->>Cart: Return cart items
+    Cart->>Browser: Display cart with items & total
+    
     User->>Cart: Click "Proceed to Checkout"
-    Cart->>Checkout: Redirect
-    Checkout->>Database: Load cart items
-    Database-->>Checkout: Return cart data
+    Cart->>Checkout: Redirect with cart items
+    Checkout->>Browser: Display checkout form
     
     User->>Checkout: Enter shipping address
-    User->>Checkout: Enter payment details
+    User->>Checkout: Enter payment details (card info)
+    User->>Checkout: Click "Complete Order"
+    
     Checkout->>PaymentAPI: POST /api/process_payment
-    Note over Checkout,PaymentAPI: {user_id, cart_items, total, address, payment_details}
+    Note over Checkout,PaymentAPI: {user_id, cart_items[], total_amount,<br/>shipping_address, card_details}
     
-    PaymentAPI->>PaymentAPI: Validate payment
+    PaymentAPI->>PaymentAPI: Validate payment details
+    PaymentAPI->>PaymentAPI: Process mock payment
+    
     PaymentAPI->>Database: BEGIN TRANSACTION
-    PaymentAPI->>Database: INSERT INTO orders
-    PaymentAPI->>Database: INSERT INTO order_items
-    PaymentAPI->>Database: DELETE FROM cart
-    PaymentAPI->>Database: COMMIT TRANSACTION
-    Database-->>PaymentAPI: Success
+    PaymentAPI->>Database: INSERT INTO orders<br/>(user_id, total_amount, shipping_address, status)
+    Database-->>PaymentAPI: Return order_id
     
-    PaymentAPI-->>Checkout: 200 OK + order_id
-    Checkout-->>Browser: Redirect to order_confirmation.php
-    Browser->>User: Display confirmation
+    PaymentAPI->>Database: INSERT INTO order_items<br/>(order_id, watch_id, quantity, price_at_time)
+    PaymentAPI->>Database: DELETE FROM cart WHERE user_id=?
+    PaymentAPI->>Database: COMMIT TRANSACTION
+    Database-->>PaymentAPI: Transaction successful
+    
+    PaymentAPI-->>Checkout: 200 OK {success: true, order_id}
+    Checkout-->>Browser: Redirect to order_confirmation.php?id=X
+    Browser->>User: Display order confirmation & details
 ```
 
 ## 7. Sequence Diagram - Admin Add Product Flow
@@ -298,29 +318,37 @@ sequenceDiagram
     participant Browser
     participant AdminDash as admin_dashboard.php
     participant ProcessAdmin as admin_process.php
-    participant ImageAPI as Image Upload Function
-    participant BlobStorage as Azure Blob Storage
+    participant ImageAPI as image-upload<br/>POST /api/upload_image
+    participant BlobStorage as Azure Blob Storage<br/>Container: images
     participant Database as Azure SQL Database
     
     Admin->>Browser: Click "Add New Watch"
-    Browser->>AdminDash: Open modal
-    Admin->>AdminDash: Fill form & select image
+    Browser->>AdminDash: Open modal form
+    Admin->>AdminDash: Fill form (name, brand, price, description)
+    Admin->>AdminDash: Select image file
     Admin->>Browser: Click "Add Watch"
     
+    Browser->>Browser: Convert image to base64
     Browser->>ImageAPI: POST /api/upload_image
-    Note over Browser,ImageAPI: {image: base64, filename}
-    ImageAPI->>ImageAPI: Decode base64
-    ImageAPI->>BlobStorage: PUT blob (REST API)
-    BlobStorage-->>ImageAPI: 201 Created
-    ImageAPI-->>Browser: Return blob URL
+    Note over Browser,ImageAPI: {image: "data:image/jpeg;base64,...",<br/>filename: "rolex-daytona.jpg"}
     
-    Browser->>ProcessAdmin: POST with watch data
-    Note over Browser,ProcessAdmin: {name, brand, price, description, image_url}
-    ProcessAdmin->>Database: INSERT INTO watches
-    Database-->>ProcessAdmin: Success
-    ProcessAdmin-->>Browser: Redirect with success message
-    Browser->>AdminDash: Reload page
-    Browser->>Admin: Display new watch
+    ImageAPI->>ImageAPI: Remove data URL prefix
+    ImageAPI->>ImageAPI: Decode base64 to bytes
+    ImageAPI->>ImageAPI: Build Azure Blob REST request<br/>with SharedKey authentication
+    ImageAPI->>BlobStorage: PUT /images/rolex-daytona.jpg
+    Note over ImageAPI,BlobStorage: Headers: x-ms-blob-type: BlockBlob<br/>Content-Type: image/jpeg
+    BlobStorage-->>ImageAPI: 201 Created
+    ImageAPI-->>Browser: 200 OK {success: true,<br/>url: "https://...blob.core.windows.net/images/rolex-daytona.jpg"}
+    
+    Browser->>ProcessAdmin: POST form data
+    Note over Browser,ProcessAdmin: {name, brand, price, description,<br/>image_url, action: "add"}
+    ProcessAdmin->>Database: INSERT INTO watches<br/>(name, brand, price, description, image_url)
+    Database-->>ProcessAdmin: Success, return new watch_id
+    ProcessAdmin-->>Browser: Redirect to admin_dashboard.php?success=Watch added
+    Browser->>AdminDash: Reload page with success message
+    AdminDash->>Database: SELECT * FROM watches
+    Database-->>AdminDash: Return all watches including new one
+    Browser->>Admin: Display updated product list
 ```
 
 ## 8. Deployment Diagram
