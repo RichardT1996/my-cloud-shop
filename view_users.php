@@ -1,5 +1,18 @@
 <?php
 // view_users.php - display registered users from the shopusers table
+session_start();
+
+// Redirect to login if not authenticated
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit();
+}
+
+// Check if user is admin
+if ($_SESSION['user_email'] !== 'admin@gmail.com') {
+    header('Location: catalog.php');
+    exit();
+}
 
 $serverName = "tcp:shopspshere-dbserver.database.windows.net,1433";
 $connectionOptions = array(

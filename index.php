@@ -10,9 +10,17 @@ session_start();
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Helvetica Neue', 'Arial', sans-serif; background: #0a0a0a; color: #f5f5f5; }
-    .header { background: #000; color: #fff; padding: 50px 0; text-align: center; border-bottom: 1px solid #222; }
-    .header h1 { font-size: 3em; font-weight: 300; letter-spacing: 8px; text-transform: uppercase; margin-bottom: 10px; }
-    .header p { font-size: 1em; color: #999; letter-spacing: 3px; text-transform: uppercase; font-weight: 300; }
+    .header { background: #000; color: #fff; padding: 25px 0; text-align: center; border-bottom: 1px solid #222; position: relative; }
+    .header h1 { font-size: 2em; font-weight: 300; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 5px; }
+    .header .tagline { font-size: 12px; color: #888; letter-spacing: 2px; text-transform: uppercase; }
+    .nav { background: #0a0a0a; border-bottom: 1px solid #222; padding: 20px 0; }
+    .nav-container { max-width: 1400px; margin: 0 auto; padding: 0 40px; display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
+    .nav a { color: #888; text-decoration: none; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; padding: 10px 20px; transition: all 0.3s ease; border: 1px solid transparent; }
+    .nav a:hover, .nav a.active { color: #fff; border-color: #333; }
+    .welcome { position: absolute; top: 30px; right: 40px; color: #888; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; }
+    .welcome span { color: #fff; margin-left: 5px; }
+    .welcome a { color: #fff; text-decoration: none; margin-left: 15px; padding: 8px 16px; border: 1px solid #333; transition: all 0.3s ease; }
+    .welcome a:hover { background: #fff; color: #000; border-color: #fff; }
     .container { max-width: 1400px; margin: 0 auto; padding: 80px 40px; }
     .hero { text-align: center; margin-bottom: 100px; padding: 60px 0; border-bottom: 1px solid #222; }
     .hero h2 { font-size: 2.5em; color: #fff; margin-bottom: 20px; font-weight: 300; letter-spacing: 4px; line-height: 1.4; }
@@ -35,39 +43,37 @@ session_start();
     .login-prompt { text-align: center; padding: 40px; background: #111; border: 1px solid #222; margin-top: 60px; }
     .login-prompt h4 { color: #fff; font-size: 1.3em; margin-bottom: 15px; font-weight: 300; letter-spacing: 2px; }
     .login-prompt p { color: #888; margin-bottom: 30px; font-weight: 300; letter-spacing: 1px; }
-    .user-bar { background: #111; color: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; }
-    .user-bar .user-info { font-size: 13px; color: #999; font-weight: 300; }
-    .user-bar .user-info strong { color: #fff; font-weight: 400; }
-    .user-bar a { color: #fff; text-decoration: none; padding: 8px 20px; background: transparent; border: 1px solid #444; font-size: 12px; font-weight: 400; transition: all 0.3s ease; margin-left: 10px; letter-spacing: 1px; text-transform: uppercase; }
-    .user-bar a:hover { background: #fff; color: #000; border-color: #fff; }
   </style>
 </head>
 <body>
   <div class="header">
-    <h1>ShopSphere</h1>
-    <p>Luxury Timepieces</p>
+    <?php if (isset($_SESSION['user_id'])): ?>
+      <div class="welcome">
+        WELCOME, <span><?php echo strtoupper(htmlspecialchars($_SESSION['user_name'])); ?></span>
+        <a href="logout.php">LOGOUT</a>
+      </div>
+    <?php endif; ?>
+    <h1>SHOPSPHERE</h1>
+    <div class="tagline">Luxury Timepieces</div>
   </div>
 
   <?php if (isset($_SESSION['user_id'])): ?>
-    <div class="user-bar">
-      <div class="user-info">
-        Welcome, <strong><?php echo htmlspecialchars($_SESSION['user_name']); ?></strong>
-      </div>
-      <div>
+    <nav class="nav">
+      <div class="nav-container">
+        <a href="index.php" class="active">HOME</a>
         <?php if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@gmail.com'): ?>
-          <a href="catalog.php">Catalog</a>
-          <a href="admin_dashboard.php">Manage Products</a>
-          <a href="view_users.php">Users</a>
-          <a href="admin_orders.php">Orders</a>
+          <a href="catalog.php">CATALOG</a>
+          <a href="admin_dashboard.php">MANAGE PRODUCTS</a>
+          <a href="view_users.php">USERS</a>
+          <a href="admin_orders.php">ORDERS</a>
         <?php else: ?>
-          <a href="catalog.php">Browse All Watches</a>
-          <a href="wishlist.php">My Wishlist</a>
-          <a href="cart.php">🛒 Cart</a>
-          <a href="my_orders.php">My Orders</a>
+          <a href="catalog.php">CATALOG</a>
+          <a href="wishlist.php">WISHLIST</a>
+          <a href="cart.php">CART</a>
+          <a href="my_orders.php">MY ORDERS</a>
         <?php endif; ?>
-        <a href="logout.php">Log Out</a>
       </div>
-    </div>
+    </nav>
   <?php endif; ?>
 
   <div class="container">
