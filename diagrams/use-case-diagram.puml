@@ -1,0 +1,64 @@
+@startuml Use Case Diagram
+!theme plain
+left to right direction
+
+title ShopSphere - Use Case Diagram
+
+actor Customer
+actor Admin
+
+rectangle "ShopSphere Use Cases" {
+    
+    package "Customer Use Cases" {
+        usecase UC1 as "Register Account"
+        usecase UC2 as "Login"
+        usecase UC3 as "Browse Catalog"
+        usecase UC4 as "Add to Wishlist"
+        usecase UC5 as "Remove from Wishlist"
+        usecase UC6 as "Add to Cart"
+        usecase UC7 as "Update Cart Quantity"
+        usecase UC8 as "Checkout"
+        usecase UC9 as "Make Payment"
+        usecase UC10 as "View Orders"
+        usecase UC11 as "Cancel Order"
+    }
+    
+    package "Admin Use Cases" {
+        usecase UC12 as "Manage Products"
+        usecase UC13 as "Add New Watch"
+        usecase UC14 as "Edit Watch Details"
+        usecase UC15 as "Delete Watch"
+        usecase UC16 as "Upload Images"
+        usecase UC17 as "View All Users"
+        usecase UC18 as "Manage Orders"
+        usecase UC19 as "Update Order Status"
+    }
+}
+
+Customer --> UC1
+Customer --> UC2
+Customer --> UC3
+Customer --> UC4
+Customer --> UC5
+Customer --> UC6
+Customer --> UC7
+Customer --> UC8
+Customer --> UC9
+Customer --> UC10
+Customer --> UC11
+
+Admin --> UC2
+Admin --> UC12
+Admin --> UC13
+Admin --> UC14
+Admin --> UC15
+Admin --> UC16
+Admin --> UC17
+Admin --> UC18
+Admin --> UC19
+
+UC8 ..> UC9 : <<includes>>
+UC13 ..> UC16 : <<includes>>
+UC14 ..> UC16 : <<includes>>
+
+@enduml

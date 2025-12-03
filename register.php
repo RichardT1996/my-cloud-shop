@@ -23,6 +23,17 @@
     .links { text-align: center; margin-top: 30px; padding-top: 30px; border-top: 1px solid #222; }
     .links a { color: #999; text-decoration: none; font-weight: 300; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; transition: all 0.3s ease; }
     .links a:hover { color: #fff; }
+    .password-requirements { margin-top: 10px; font-size: 11px; color: #666; }
+    .requirement { padding: 4px 0; transition: all 0.3s ease; }
+    .requirement.valid { color: #4caf50; }
+    .requirement.invalid { color: #666; }
+    .requirement::before { content: '✗ '; margin-right: 5px; }
+    .requirement.valid::before { content: '✓ '; }
+    .password-strength { margin-top: 8px; height: 3px; background: #222; border-radius: 2px; overflow: hidden; }
+    .password-strength-bar { height: 100%; width: 0%; transition: all 0.3s ease; }
+    .password-strength-bar.weak { width: 33%; background: #ff6b6b; }
+    .password-strength-bar.medium { width: 66%; background: #ffd93d; }
+    .password-strength-bar.strong { width: 100%; background: #4caf50; }
   </style>
 </head>
 <body>
@@ -55,7 +66,22 @@
 
       <div class="form-group">
         <label>Password</label>
-        <input type="password" name="password" required>
+        <input type="password" name="password" id="password" required>
+        <div class="password-strength">
+          <div class="password-strength-bar" id="strengthBar"></div>
+        </div>
+        <div class="password-requirements">
+          <div class="requirement" id="req-length">At least 8 characters</div>
+          <div class="requirement" id="req-uppercase">One uppercase letter</div>
+          <div class="requirement" id="req-lowercase">One lowercase letter</div>
+          <div class="requirement" id="req-number">One number</div>
+          <div class="requirement" id="req-special">One special character (!@#$%^&*)</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Confirm Password</label>
+        <input type="password" name="confirm_password" id="confirmPassword" required>
       </div>
 
       <div class="form-group">
@@ -69,5 +95,82 @@
       <a href="index.php">Back to Home</a>
     </div>
   </div>
+
+  <script>
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const strengthBar = document.getElementById('strengthBar');
+    const requirements = {
+      length: document.getElementById('req-length'),
+      uppercase: document.getElementById('req-uppercase'),
+      lowercase: document.getElementById('req-lowercase'),
+      number: document.getElementById('req-number'),
+      special: document.getElementById('req-special')
+    };
+
+    const validationRules = {
+      length: (pwd) => pwd.length >= 8,
+      uppercase: (pwd) => /[A-Z]/.test(pwd),
+      lowercase: (pwd) => /[a-z]/.test(pwd),
+      number: (pwd) => /[0-9]/.test(pwd),
+      special: (pwd) => /[!@#$%^&*(),.?":{}|<>]/.test(pwd)
+    };
+
+    passwordInput.addEventListener('input', function() {
+      const password = this.value;
+      let validCount = 0;
+
+      // Check each requirement
+      for (let rule in validationRules) {
+        const isValid = validationRules[rule](password);
+        if (isValid) {
+          requirements[rule].classList.add('valid');
+          requirements[rule].classList.remove('invalid');
+          validCount++;
+        } else {
+          requirements[rule].classList.add('invalid');
+          requirements[rule].classList.remove('valid');
+        }
+      }
+
+      // Update strength bar
+      strengthBar.className = 'password-strength-bar';
+      if (validCount <= 2) {
+        strengthBar.classList.add('weak');
+      } else if (validCount <= 4) {
+        strengthBar.classList.add('medium');
+      } else {
+        strengthBar.classList.add('strong');
+      }
+    });
+
+    // Form validation on submit
+    document.querySelector('form').addEventListener('submit', function(e) {
+      const password = passwordInput.value;
+      const confirmPassword = confirmPasswordInput.value;
+
+      // Check all requirements
+      let allValid = true;
+      for (let rule in validationRules) {
+        if (!validationRules[rule](password)) {
+          allValid = false;
+          break;
+        }
+      }
+
+      if (!allValid) {
+        e.preventDefault();
+        alert('Password must meet all requirements.');
+        return false;
+      }
+
+      // Check if passwords match
+      if (password !== confirmPassword) {
+        e.preventDefault();
+        alert('Passwords do not match.');
+        return false;
+      }
+    });
+  </script>
 </body>
 </html>

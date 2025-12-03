@@ -1,0 +1,32 @@
+@startuml High Level Architecture
+!define AzurePuml https://raw.githubusercontent.com/plantuml-stdlib/Azure-PlantUML/release/2-2/dist
+!includeurl AzurePuml/AzureCommon.puml
+!includeurl AzurePuml/Compute/AzureFunction.puml
+!includeurl AzurePuml/Compute/AzureAppService.puml
+!includeurl AzurePuml/Databases/AzureSqlDatabase.puml
+!includeurl AzurePuml/Storage/AzureBlobStorage.puml
+
+title ShopSphere - High Level Architecture
+
+actor "User" as user
+
+rectangle "Frontend" {
+    AzureAppService(webapp, "PHP Web App", "Azure App Service")
+}
+
+rectangle "Backend Services" {
+    AzureFunction(functions, "Azure Functions", "Authentication\nWishlist\nPayments\nImage Upload")
+}
+
+rectangle "Data Layer" {
+    AzureSqlDatabase(database, "SQL Database", "shopspheredb")
+    AzureBlobStorage(storage, "Blob Storage", "Product Images")
+}
+
+user --> webapp : Browse & Shop
+webapp --> functions : API Calls
+functions --> database : Read/Write
+functions --> storage : Store Images
+webapp --> database : Direct Queries
+
+@enduml

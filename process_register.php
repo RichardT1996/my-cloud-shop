@@ -14,9 +14,39 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = $_POST['name'];
     $email = $_POST['email'];
     $password = $_POST['password'];
+    $confirm_password = $_POST['confirm_password'];
 
     // Basic validation
-    if (!empty($name) && !empty($email) && !empty($password)) {
+    if (!empty($name) && !empty($email) && !empty($password) && !empty($confirm_password)) {
+        // Password validation
+        $password_errors = [];
+        
+        if (strlen($password) < 8) {
+            $password_errors[] = 'Password must be at least 8 characters';
+        }
+        if (!preg_match('/[A-Z]/', $password)) {
+            $password_errors[] = 'Password must contain at least one uppercase letter';
+        }
+        if (!preg_match('/[a-z]/', $password)) {
+            $password_errors[] = 'Password must contain at least one lowercase letter';
+        }
+        if (!preg_match('/[0-9]/', $password)) {
+            $password_errors[] = 'Password must contain at least one number';
+        }
+        if (!preg_match('/[!@#$%^&*(),.?":{}|<>]/', $password)) {
+            $password_errors[] = 'Password must contain at least one special character';
+        }
+        
+        // Check if passwords match
+        if ($password !== $confirm_password) {
+            $password_errors[] = 'Passwords do not match';
+        }
+        
+        // If there are validation errors, redirect back
+        if (!empty($password_errors)) {
+            header("Location: register.php?error=" . urlencode(implode('; ', $password_errors)));
+            exit();
+        }
         // Connect to database
         $conn = sqlsrv_connect($serverName, $connectionOptions);
 
@@ -45,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     }
                 }
                 // Redirect back with detailed error
-                header("Location: register.html?error=" . urlencode($error_message));
+                header("Location: register.php?error=" . urlencode($error_message));
                 exit();
             }
 
@@ -59,16 +89,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $conn_error_message .= $error['message'];
                 }
             }
-            header("Location: register.html?error=" . urlencode($conn_error_message));
+            header("Location: register.php?error=" . urlencode($conn_error_message));
             exit();
         }
     } else {
-        header("Location: register.html?error=Please+fill+all+fields");
+        header("Location: register.php?error=Please+fill+all+fields");
         exit();
     }
 } else {
     // If someone tries to access this page directly
-    header("Location: register.html");
+    header("Location: register.php");
     exit();
 }
 ?>

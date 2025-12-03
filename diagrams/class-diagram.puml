@@ -1,0 +1,116 @@
+@startuml Class Diagram
+!theme plain
+
+title ShopSphere - PHP Application Structure
+
+class DatabaseConfig {
+    +string DB_HOST
+    +string DB_NAME
+    +string DB_USER
+    +string DB_PASS
+    --
+    +getConnection() : resource
+}
+
+class Session {
+    +int user_id
+    +string user_name
+    +string user_email
+    --
+    +start() : void
+    +destroy() : void
+    +isAdmin() : bool
+    +isAuthenticated() : bool
+}
+
+class User {
+    +int id
+    +string name
+    +string email
+    +string password
+    +datetime created_at
+    --
+    +login() : bool
+    +register() : bool
+    +logout() : void
+}
+
+class Watch {
+    +int id
+    +string name
+    +string brand
+    +decimal price
+    +string description
+    +string image_url
+    --
+    +getAll() : array
+    +getById() : Watch
+    +create() : bool
+    +update() : bool
+    +delete() : bool
+}
+
+class Wishlist {
+    +int id
+    +int user_id
+    +int watch_id
+    +datetime added_at
+    --
+    +getByUser() : array
+    +add() : bool
+    +remove() : bool
+}
+
+class Cart {
+    +int id
+    +int user_id
+    +int watch_id
+    +int quantity
+    +datetime added_at
+    --
+    +getByUser() : array
+    +add() : bool
+    +updateQuantity() : bool
+    +remove() : bool
+    +clear() : bool
+}
+
+class Order {
+    +int id
+    +int user_id
+    +decimal total_amount
+    +string status
+    +string shipping_address
+    +string payment_status
+    +datetime created_at
+    --
+    +create() : bool
+    +getByUser() : array
+    +updateStatus() : bool
+    +cancel() : bool
+}
+
+class OrderItem {
+    +int id
+    +int order_id
+    +int watch_id
+    +int quantity
+    +decimal price_at_time
+}
+
+User "1" --> "*" Wishlist : has
+User "1" --> "*" Cart : has
+User "1" --> "*" Order : places
+Watch "1" --> "*" Wishlist : in
+Watch "1" --> "*" Cart : in
+Watch "1" --> "*" OrderItem : ordered
+Order "1" --> "*" OrderItem : contains
+
+Session ..> User : manages
+DatabaseConfig ..> User : provides connection
+DatabaseConfig ..> Watch : provides connection
+DatabaseConfig ..> Wishlist : provides connection
+DatabaseConfig ..> Cart : provides connection
+DatabaseConfig ..> Order : provides connection
+
+@enduml

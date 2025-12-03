@@ -1,0 +1,41 @@
+@startuml Wishlist Operations Flow
+!theme plain
+skinparam sequenceMessageAlign center
+
+title ShopSphere - Wishlist Operations Flow
+
+actor User
+participant "Browser" as Browser
+participant "catalog.php" as Catalog
+participant "shopsphere-wishlist\nGET /api/get_wishlist" as GetWishlist
+participant "shopsphere-wishlist\nPOST /api/add_to_wishlist" as AddWishlist
+participant "shopsphere-wishlist\nPOST /api/remove_from_wishlist" as RemoveWishlist
+database "Azure SQL\nDatabase" as Database
+
+User -> Browser: Browse catalog
+Browser -> Catalog: Load page
+Catalog -> GetWishlist: GET /api/get_wishlist?user_id=1
+GetWishlist -> Database: SELECT w.*, wt.name, wt.brand,\nwt.price, wt.image_url\nFROM wishlist w JOIN watches wt
+Database --> GetWishlist: Return wishlist items\nwith watch details
+GetWishlist --> Catalog: 200 OK\n{success: true, items: [...]}
+Catalog -> Browser: Display with filled heart icons
+
+|||
+
+User -> Browser: Click empty heart icon
+Browser -> AddWishlist: POST /api/add_to_wishlist\n{user_id: 1, watch_id: 5}
+AddWishlist -> Database: INSERT INTO wishlist\n(user_id, watch_id, added_at)
+Database --> AddWishlist: Success
+AddWishlist --> Browser: 200 OK\n{success: true, message}
+Browser --> User: Update heart icon to filled
+
+|||
+
+User -> Browser: Click filled heart icon
+Browser -> RemoveWishlist: POST /api/remove_from_wishlist\n{user_id: 1, watch_id: 5}
+RemoveWishlist -> Database: DELETE FROM wishlist\nWHERE user_id=? AND watch_id=?
+Database --> RemoveWishlist: Success
+RemoveWishlist --> Browser: 200 OK\n{success: true, message}
+Browser --> User: Update heart icon to empty
+
+@enduml

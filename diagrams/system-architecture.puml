@@ -1,0 +1,62 @@
+@startuml System Architecture
+!define AzurePuml https://raw.githubusercontent.com/plantuml-stdlib/Azure-PlantUML/release/2-2/dist
+!includeurl AzurePuml/AzureCommon.puml
+!includeurl AzurePuml/Compute/AzureFunction.puml
+!includeurl AzurePuml/Compute/AzureAppService.puml
+!includeurl AzurePuml/Databases/AzureSqlDatabase.puml
+!includeurl AzurePuml/Storage/AzureBlobStorage.puml
+
+title ShopSphere - System Architecture
+
+actor "User" as user
+rectangle "Client Layer" {
+    component "Web Browser" as browser
+}
+
+rectangle "Azure Web App - UK West" {
+    AzureAppService(webapp, "PHP Web Application", "rt-shopsphere.azurewebsites.net") {
+        component "index.php" as home
+        component "login.php / register.php" as auth
+        component "catalog.php" as catalog
+        component "wishlist.php" as wishlist
+        component "cart.php" as cart
+        component "checkout.php" as checkout
+        component "my_orders.php" as orders
+        component "admin_dashboard.php" as admin
+        component "view_users.php" as users
+        component "admin_orders.php" as adminorders
+    }
+}
+
+rectangle "Azure Functions - Sweden Central" {
+    AzureFunction(authfunc, "Authentication", "shopsphere-authentication")
+    AzureFunction(wishlistfunc, "Wishlist", "shopsphere-wishlist")
+    AzureFunction(paymentfunc, "Payment", "shopsphere-payment")
+    AzureFunction(imagefunc, "Image Upload", "image-upload")
+}
+
+rectangle "Azure Storage" {
+    AzureBlobStorage(blobstorage, "Blob Storage", "shopspherestore\nContainer: images")
+}
+
+rectangle "Azure SQL" {
+    AzureSqlDatabase(database, "SQL Database", "shopspshere-dbserver\nDatabase: shopspheredb")
+}
+
+user --> browser : HTTPS
+browser --> webapp : HTTPS
+
+webapp --> authfunc : API Calls
+webapp --> wishlistfunc : API Calls
+webapp --> paymentfunc : API Calls
+admin --> imagefunc : API Calls
+
+authfunc --> database : Query/Insert
+wishlistfunc --> database : Query/Insert/Delete
+paymentfunc --> database : Query/Insert
+imagefunc --> blobstorage : Upload Images
+
+webapp --> database : Direct SQL
+webapp --> blobstorage : Read Images
+
+@enduml

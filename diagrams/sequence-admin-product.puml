@@ -1,0 +1,40 @@
+@startuml Admin Add Product Flow
+!theme plain
+skinparam sequenceMessageAlign center
+
+title ShopSphere - Admin Add Product Flow
+
+actor Admin
+participant "Browser" as Browser
+participant "admin_dashboard.php" as AdminDash
+participant "admin_process.php" as ProcessAdmin
+participant "image-upload\nPOST /api/upload_image" as ImageAPI
+participant "Azure Blob Storage\nContainer: images" as BlobStorage
+database "Azure SQL\nDatabase" as Database
+
+Admin -> Browser: Click "Add New Watch"
+Browser -> AdminDash: Open modal form
+Admin -> AdminDash: Fill form (name, brand, price, description)
+Admin -> AdminDash: Select image file
+Admin -> Browser: Click "Add Watch"
+
+Browser -> Browser: Convert image to base64
+Browser -> ImageAPI: POST /api/upload_image\nimage: base64 data\nfilename: rolex-daytona.jpg
+
+ImageAPI -> ImageAPI: Remove data URL prefix
+ImageAPI -> ImageAPI: Decode base64 to bytes
+ImageAPI -> ImageAPI: Build Azure Blob REST request\nwith SharedKey authentication
+ImageAPI -> BlobStorage: PUT /images/rolex-daytona.jpg\nHeaders: x-ms-blob-type: BlockBlob\nContent-Type: image/jpeg
+BlobStorage --> ImageAPI: 201 Created
+ImageAPI --> Browser: 200 OK with blob URL
+
+Browser -> ProcessAdmin: POST form data\nname, brand, price, description,\nimage_url, action=add
+ProcessAdmin -> Database: INSERT INTO watches
+Database --> ProcessAdmin: Success, return new watch_id
+ProcessAdmin --> Browser: Redirect to admin_dashboard.php\n?success=Watch added
+Browser -> AdminDash: Reload page with success message
+AdminDash -> Database: SELECT * FROM watches
+Database --> AdminDash: Return all watches including new one
+Browser --> Admin: Display updated product list
+
+@enduml

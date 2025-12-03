@@ -1,0 +1,67 @@
+@startuml Component Diagram
+!theme plain
+
+title ShopSphere - Component Diagram
+
+package "Presentation Layer" {
+    [Web UI\nHTML/CSS/JavaScript] as UI
+}
+
+package "Application Layer - PHP Web App" {
+    [Session Management] as SessionMgmt
+    [Authentication Pages] as AuthPages
+    [Customer Pages] as CustomerPages
+    [Admin Pages] as AdminPages
+    [db_config.php] as DBConfig
+}
+
+package "API Layer - Azure Functions" {
+    [Login API] as LoginAPI
+    [Get Wishlist API] as GetWishlist
+    [Add to Wishlist API] as AddWishlist
+    [Remove from Wishlist API] as RemoveWishlist
+    [Process Payment API] as ProcessPayment
+    [Upload Image API] as UploadImage
+}
+
+package "Data Access Layer" {
+    [PHP sqlsrv Driver] as SQLSRVDriver
+    [Python pyodbc Driver] as PyODBC
+}
+
+package "Data Layer" {
+    database "Azure SQL\nDatabase" as AzureSQL
+    storage "Azure Blob\nStorage" as BlobStore
+}
+
+UI --> AuthPages
+UI --> CustomerPages
+UI --> AdminPages
+
+AuthPages --> SessionMgmt
+CustomerPages --> SessionMgmt
+AdminPages --> SessionMgmt
+
+AuthPages --> LoginAPI
+CustomerPages --> GetWishlist
+CustomerPages --> AddWishlist
+CustomerPages --> RemoveWishlist
+CustomerPages --> ProcessPayment
+AdminPages --> UploadImage
+
+AuthPages --> DBConfig
+CustomerPages --> DBConfig
+AdminPages --> DBConfig
+
+DBConfig --> SQLSRVDriver
+LoginAPI --> PyODBC
+GetWishlist --> PyODBC
+AddWishlist --> PyODBC
+RemoveWishlist --> PyODBC
+ProcessPayment --> PyODBC
+
+SQLSRVDriver --> AzureSQL
+PyODBC --> AzureSQL
+UploadImage --> BlobStore
+
+@enduml

@@ -1,0 +1,34 @@
+@startuml User Login Flow
+!theme plain
+skinparam sequenceMessageAlign center
+
+title ShopSphere - User Login Flow
+
+actor User
+participant "Browser" as Browser
+participant "login.php" as LoginPage
+participant "process_login.php" as ProcessLogin
+participant "shopsphere-authentication\nPOST /api/login" as AuthFunc
+database "Azure SQL\nDatabase" as Database
+
+User -> Browser: Enter credentials
+Browser -> LoginPage: Display login form
+User -> LoginPage: Submit email & password
+LoginPage -> ProcessLogin: POST credentials
+ProcessLogin -> AuthFunc: POST /api/login\n{email, password}
+AuthFunc -> Database: SELECT FROM shopusers\nWHERE email=?
+Database --> AuthFunc: Return user record with\nhashed password
+AuthFunc -> AuthFunc: Verify bcrypt\npassword hash
+
+alt Authentication Success
+    AuthFunc --> ProcessLogin: 200 OK\n{success: true, user_id, name}
+    ProcessLogin -> ProcessLogin: session_start()\nSet user_id, user_name, user_email
+    ProcessLogin --> Browser: Redirect to index.php
+    Browser --> User: Display home page
+else Authentication Failed
+    AuthFunc --> ProcessLogin: 401\n{success: false, error}
+    ProcessLogin --> Browser: Redirect to login.php?error=...
+    Browser --> User: Display error message
+end
+
+@enduml

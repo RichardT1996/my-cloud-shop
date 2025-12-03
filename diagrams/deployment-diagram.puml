@@ -1,0 +1,66 @@
+@startuml Deployment Diagram
+!define AzurePuml https://raw.githubusercontent.com/plantuml-stdlib/Azure-PlantUML/release/2-2/dist
+!includeurl AzurePuml/AzureCommon.puml
+!includeurl AzurePuml/Compute/AzureFunction.puml
+!includeurl AzurePuml/Compute/AzureAppService.puml
+!includeurl AzurePuml/Databases/AzureSqlDatabase.puml
+!includeurl AzurePuml/Storage/AzureBlobStorage.puml
+!includeurl AzurePuml/Storage/AzureStorage.puml
+!includeurl AzurePuml/DevOps/AzureDevOps.puml
+
+title ShopSphere - Deployment Diagram
+
+node "Azure Cloud - UK West Region" {
+    AzureAppService(webapp, "Azure App Service", "PHP 8.x Runtime\nrt-shopsphere.azurewebsites.net")
+}
+
+node "Azure Cloud - Sweden Central Region" {
+    AzureFunction(func1, "Authentication", "Python 3.12\nshopsphere-authentication")
+    AzureFunction(func2, "Wishlist", "Python 3.12\nshopsphere-wishlist")
+    AzureFunction(func3, "Payment", "Python 3.12\nshopsphere-payment")
+    AzureFunction(func4, "Image Upload", "Python 3.12\nimage-upload")
+}
+
+node "Azure Storage" {
+    AzureBlobStorage(storage, "Storage Account", "shopspherestore\nBlob Container: images")
+    AzureStorage(funcstorage, "Function Storage", "Function Runtime Storage")
+}
+
+node "Azure SQL" {
+    AzureSqlDatabase(sqldb, "SQL Server", "shopspshere-dbserver\nDatabase: shopspheredb")
+}
+
+node "GitHub" {
+    component "Repository" as repo <<RichardT1996/my-cloud-shop\nBranch: shopsphere>>
+}
+
+node "CI/CD Pipeline" {
+    AzureDevOps(actions, "GitHub Actions", "Workflows")
+}
+
+repo --> actions : git push
+actions --> webapp : Deploy PHP App
+actions --> func1 : Deploy Function
+actions --> func2 : Deploy Function
+actions --> func3 : Deploy Function
+actions --> func4 : Deploy Function
+
+webapp ..> func1 : HTTPS API Calls
+webapp ..> func2 : HTTPS API Calls
+webapp ..> func3 : HTTPS API Calls
+webapp ..> func4 : HTTPS API Calls
+
+webapp --> sqldb : SQL Connection
+func1 --> sqldb : SQL Connection
+func2 --> sqldb : SQL Connection
+func3 --> sqldb : SQL Connection
+
+func4 --> storage : Blob API
+func1 ..> funcstorage : Runtime Storage
+func2 ..> funcstorage : Runtime Storage
+func3 ..> funcstorage : Runtime Storage
+func4 ..> funcstorage : Runtime Storage
+
+webapp --> storage : Read Images
+
+@enduml

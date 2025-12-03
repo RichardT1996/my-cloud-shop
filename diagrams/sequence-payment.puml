@@ -1,0 +1,46 @@
+@startuml Checkout and Payment Flow
+!theme plain
+skinparam sequenceMessageAlign center
+
+title ShopSphere - Checkout & Payment Flow
+
+actor User
+participant "Browser" as Browser
+participant "cart.php" as Cart
+participant "checkout.php" as Checkout
+participant "shopsphere-payment\nPOST /api/process_payment" as PaymentAPI
+database "Azure SQL\nDatabase" as Database
+
+User -> Browser: View cart
+Browser -> Cart: Load cart items from database
+Cart -> Database: SELECT c.*, w.name, w.brand,\nw.price, w.image_url\nFROM cart c JOIN watches w
+Database --> Cart: Return cart items
+Cart -> Browser: Display cart with items & total
+
+User -> Cart: Click "Proceed to Checkout"
+Cart -> Checkout: Redirect with cart items
+Checkout -> Browser: Display checkout form
+
+User -> Checkout: Enter shipping address
+User -> Checkout: Enter payment details (card info)
+User -> Checkout: Click "Complete Order"
+
+Checkout -> PaymentAPI: POST /api/process_payment\n{user_id, cart_items[], total_amount,\nshipping_address, card_details}
+
+PaymentAPI -> PaymentAPI: Validate payment details
+PaymentAPI -> PaymentAPI: Process mock payment
+
+PaymentAPI -> Database: BEGIN TRANSACTION
+PaymentAPI -> Database: INSERT INTO orders\n(user_id, total_amount,\nshipping_address, status)
+Database --> PaymentAPI: Return order_id
+
+PaymentAPI -> Database: INSERT INTO order_items\n(order_id, watch_id,\nquantity, price_at_time)
+PaymentAPI -> Database: DELETE FROM cart\nWHERE user_id=?
+PaymentAPI -> Database: COMMIT TRANSACTION
+Database --> PaymentAPI: Transaction successful
+
+PaymentAPI --> Checkout: 200 OK\n{success: true, order_id}
+Checkout --> Browser: Redirect to order_confirmation.php?id=X
+Browser --> User: Display order confirmation & details
+
+@enduml

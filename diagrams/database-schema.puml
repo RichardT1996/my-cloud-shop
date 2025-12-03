@@ -1,0 +1,74 @@
+@startuml Database Schema
+!theme plain
+skinparam linetype ortho
+
+title ShopSphere - Database Schema (ER Diagram)
+
+entity "shopusers" as users {
+    * id : INT <<PK>>
+    --
+    * name : NVARCHAR(100)
+    * email : NVARCHAR(255) <<UK>>
+    * password : NVARCHAR(255)
+    created_at : DATETIME
+    updated_at : DATETIME
+}
+
+entity "watches" as watches {
+    * id : INT <<PK>>
+    --
+    * name : NVARCHAR(200)
+    * brand : NVARCHAR(100)
+    * price : DECIMAL(10,2)
+    description : NVARCHAR(500)
+    image_url : NVARCHAR(500)
+    created_at : DATETIME
+}
+
+entity "wishlist" as wishlist {
+    * id : INT <<PK>>
+    --
+    * user_id : INT <<FK>>
+    * watch_id : INT <<FK>>
+    added_at : DATETIME
+}
+
+entity "cart" as cart {
+    * id : INT <<PK>>
+    --
+    * user_id : INT <<FK>>
+    * watch_id : INT <<FK>>
+    * quantity : INT
+    added_at : DATETIME
+}
+
+entity "orders" as orders {
+    * id : INT <<PK>>
+    --
+    * user_id : INT <<FK>>
+    * total_amount : DECIMAL(10,2)
+    * status : NVARCHAR(50)
+    * shipping_address : NVARCHAR(500)
+    payment_status : NVARCHAR(50)
+    created_at : DATETIME
+    updated_at : DATETIME
+}
+
+entity "order_items" as orderitems {
+    * id : INT <<PK>>
+    --
+    * order_id : INT <<FK>>
+    * watch_id : INT <<FK>>
+    * quantity : INT
+    * price_at_time : DECIMAL(10,2)
+}
+
+users ||--o{ wishlist : "maintains"
+users ||--o{ cart : "has"
+users ||--o{ orders : "places"
+watches ||--o{ wishlist : "includes"
+watches ||--o{ cart : "contains"
+watches ||--o{ orderitems : "included_in"
+orders ||--|{ orderitems : "contains"
+
+@enduml
