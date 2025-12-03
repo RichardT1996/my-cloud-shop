@@ -13,10 +13,11 @@ session_start();
     .header { background: #000; color: #fff; padding: 25px 0; text-align: center; border-bottom: 1px solid #222; position: relative; }
     .header h1 { font-size: 2em; font-weight: 300; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 5px; }
     .header .tagline { font-size: 12px; color: #888; letter-spacing: 2px; text-transform: uppercase; }
-    .nav { background: #0a0a0a; border-bottom: 1px solid #222; padding: 20px 0; }
-    .nav-container { max-width: 1400px; margin: 0 auto; padding: 0 40px; display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
-    .nav a { color: #888; text-decoration: none; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; padding: 10px 20px; transition: all 0.3s ease; border: 1px solid transparent; }
-    .nav a:hover, .nav a.active { color: #fff; border-color: #333; }
+    .nav { background: #111; border-bottom: 1px solid #222; padding: 0; }
+    .nav ul { list-style: none; display: flex; justify-content: center; max-width: 1200px; margin: 0 auto; }
+    .nav li { margin: 0; }
+    .nav a { display: block; padding: 18px 30px; color: #888; text-decoration: none; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s ease; border-bottom: 2px solid transparent; }
+    .nav a:hover, .nav a.active { color: #fff; background: rgba(255,255,255,0.05); border-bottom-color: #fff; }
     .welcome { position: absolute; top: 30px; right: 40px; color: #888; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; }
     .welcome span { color: #fff; margin-left: 5px; }
     .welcome a { color: #fff; text-decoration: none; margin-left: 15px; padding: 8px 16px; border: 1px solid #333; transition: all 0.3s ease; }
@@ -59,20 +60,20 @@ session_start();
 
   <?php if (isset($_SESSION['user_id'])): ?>
     <nav class="nav">
-      <div class="nav-container">
-        <a href="index.php" class="active">HOME</a>
+      <ul>
+        <li><a href="index.php" class="active">Home</a></li>
         <?php if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@gmail.com'): ?>
-          <a href="catalog.php">CATALOG</a>
-          <a href="admin_dashboard.php">MANAGE PRODUCTS</a>
-          <a href="view_users.php">USERS</a>
-          <a href="admin_orders.php">ORDERS</a>
+          <li><a href="catalog.php">Catalog</a></li>
+          <li><a href="admin_dashboard.php">Admin</a></li>
+          <li><a href="view_users.php">Users</a></li>
+          <li><a href="admin_orders.php">Orders</a></li>
         <?php else: ?>
-          <a href="catalog.php">CATALOG</a>
-          <a href="wishlist.php">WISHLIST</a>
-          <a href="cart.php">CART</a>
-          <a href="my_orders.php">MY ORDERS</a>
+          <li><a href="catalog.php">Catalog</a></li>
+          <li><a href="wishlist.php">Wishlist</a></li>
+          <li><a href="cart.php">Cart</a></li>
+          <li><a href="my_orders.php">My Orders</a></li>
         <?php endif; ?>
-      </div>
+      </ul>
     </nav>
   <?php endif; ?>
 
