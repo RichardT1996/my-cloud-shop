@@ -10,30 +10,30 @@
     .header { background: #000; color: #fff; padding: 25px 0; text-align: center; border-bottom: 1px solid #222; }
     .header h1 { font-size: 2em; font-weight: 300; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 5px; }
     .header p { font-size: 0.9em; color: #999; letter-spacing: 2px; text-transform: uppercase; font-weight: 300; }
-    .register-form { max-width: 450px; margin: 80px auto; padding: 50px; background: #111; border: 1px solid #222; }
-    .form-title { text-align: center; margin-bottom: 40px; color: #fff; font-size: 1.5em; font-weight: 300; letter-spacing: 3px; text-transform: uppercase; }
-    .form-group { margin-bottom: 25px; }
-    label { display: block; margin-bottom: 10px; color: #999; font-weight: 300; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; }
-    input[type="text"], input[type="email"], input[type="password"] { width: 100%; padding: 14px 0; border: none; border-bottom: 1px solid #333; box-sizing: border-box; font-size: 15px; background: transparent; color: #fff; transition: all 0.3s ease; font-weight: 300; }
-    input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus { outline: none; border-bottom-color: #666; }
+    .register-form { max-width: 650px; margin: 60px auto; padding: 60px 70px; background: linear-gradient(135deg, #111 0%, #1a1a1a 100%); border: 1px solid #333; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+    .form-title { text-align: center; margin-bottom: 50px; color: #fff; font-size: 1.8em; font-weight: 300; letter-spacing: 4px; text-transform: uppercase; }
+    .form-group { margin-bottom: 30px; position: relative; }
+    label { display: block; margin-bottom: 12px; color: #aaa; font-weight: 400; font-size: 11px; text-transform: uppercase; letter-spacing: 2.5px; }
+    input[type="text"], input[type="email"], input[type="password"] { width: 100%; padding: 16px 0; border: none; border-bottom: 2px solid #333; box-sizing: border-box; font-size: 16px; background: transparent; color: #fff; transition: all 0.3s ease; font-weight: 300; }
+    input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus { outline: none; border-bottom-color: #888; }
     input[type="text"]::placeholder, input[type="email"]::placeholder, input[type="password"]::placeholder { color: #444; }
-    .btn { background: transparent; border: 1px solid #444; color: #fff; padding: 14px 20px; cursor: pointer; width: 100%; font-size: 11px; font-weight: 400; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 2px; margin-top: 10px; }
-    .btn:hover { background: #fff; color: #000; border-color: #fff; }
-    .error { background: #1a0000; border: 1px solid #330000; color: #ff6b6b; padding: 14px; margin-bottom: 25px; font-weight: 300; font-size: 13px; letter-spacing: 0.5px; }
+    .btn { background: transparent; border: 2px solid #555; color: #fff; padding: 16px 20px; cursor: pointer; width: 100%; font-size: 12px; font-weight: 500; transition: all 0.4s ease; text-transform: uppercase; letter-spacing: 3px; margin-top: 15px; border-radius: 2px; }
+    .btn:hover { background: #fff; color: #000; border-color: #fff; transform: translateY(-1px); box-shadow: 0 5px 20px rgba(255,255,255,0.2); }
+    .error { background: linear-gradient(135deg, #1a0000 0%, #2a0000 100%); border-left: 3px solid #ff4444; color: #ffaaaa; padding: 16px 20px; margin-bottom: 30px; font-weight: 300; font-size: 13px; letter-spacing: 0.5px; border-radius: 2px; }
     .links { text-align: center; margin-top: 30px; padding-top: 30px; border-top: 1px solid #222; }
     .links a { color: #999; text-decoration: none; font-weight: 300; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; transition: all 0.3s ease; }
     .links a:hover { color: #fff; }
-    .password-requirements { margin-top: 10px; font-size: 11px; color: #666; }
-    .requirement { padding: 4px 0; transition: all 0.3s ease; }
-    .requirement.valid { color: #4caf50; }
-    .requirement.invalid { color: #666; }
-    .requirement::before { content: '✗ '; margin-right: 5px; }
-    .requirement.valid::before { content: '✓ '; }
-    .password-strength { margin-top: 8px; height: 3px; background: #222; border-radius: 2px; overflow: hidden; }
-    .password-strength-bar { height: 100%; width: 0%; transition: all 0.3s ease; }
-    .password-strength-bar.weak { width: 33%; background: #ff6b6b; }
-    .password-strength-bar.medium { width: 66%; background: #ffd93d; }
-    .password-strength-bar.strong { width: 100%; background: #4caf50; }
+    .password-requirements { margin-top: 15px; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 4px; border-left: 2px solid #333; }
+    .requirement { padding: 6px 0; transition: all 0.3s ease; font-size: 12px; display: flex; align-items: center; }
+    .requirement.valid { color: #6fd96f; }
+    .requirement.invalid { color: #777; }
+    .requirement::before { content: '✗ '; margin-right: 10px; font-weight: bold; font-size: 14px; }
+    .requirement.valid::before { content: '✓ '; color: #6fd96f; }
+    .password-strength { margin-top: 12px; height: 4px; background: #1a1a1a; border-radius: 3px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5); }
+    .password-strength-bar { height: 100%; width: 0%; transition: all 0.4s ease; border-radius: 3px; }
+    .password-strength-bar.weak { width: 33%; background: linear-gradient(90deg, #ff4444 0%, #ff6b6b 100%); }
+    .password-strength-bar.medium { width: 66%; background: linear-gradient(90deg, #ffa500 0%, #ffd93d 100%); }
+    .password-strength-bar.strong { width: 100%; background: linear-gradient(90deg, #4caf50 0%, #6fd96f 100%); box-shadow: 0 0 10px rgba(76, 175, 80, 0.5); }
   </style>
 </head>
 <body>
