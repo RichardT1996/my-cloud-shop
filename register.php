@@ -10,7 +10,7 @@
     .header { background: #000; color: #fff; padding: 25px 0; text-align: center; border-bottom: 1px solid #222; }
     .header h1 { font-size: 2em; font-weight: 300; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 5px; }
     .header p { font-size: 0.9em; color: #999; letter-spacing: 2px; text-transform: uppercase; font-weight: 300; }
-    .register-form { max-width: 900px; margin: 60px auto; padding: 60px 80px; background: linear-gradient(135deg, #111 0%, #1a1a1a 100%); border: 1px solid #333; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+    .register-form { max-width: 1100px; margin: 50px auto; padding: 70px 100px; background: linear-gradient(135deg, #111 0%, #1a1a1a 100%); border: 1px solid #333; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
     .form-title { text-align: center; margin-bottom: 50px; color: #fff; font-size: 1.8em; font-weight: 300; letter-spacing: 4px; text-transform: uppercase; }
     .form-group { margin-bottom: 30px; position: relative; }
     label { display: block; margin-bottom: 12px; color: #aaa; font-weight: 400; font-size: 11px; text-transform: uppercase; letter-spacing: 2.5px; }
@@ -23,14 +23,14 @@
     .links { text-align: center; margin-top: 30px; padding-top: 30px; border-top: 1px solid #222; }
     .links a { color: #999; text-decoration: none; font-weight: 300; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; transition: all 0.3s ease; }
     .links a:hover { color: #fff; }
-    .password-requirements { margin-top: 18px; padding: 20px 22px; background: rgba(0,0,0,0.5); border-radius: 6px; border-left: 3px solid #444; border: 1px solid #2a2a2a; }
-    .requirement { padding: 8px 0; transition: all 0.3s ease; font-size: 13px; display: flex; align-items: center; }
-    .requirement.valid { color: #6fd96f; }
-    .requirement.invalid { color: #999; }
-    .requirement::before { content: '✗ '; margin-right: 12px; font-weight: bold; font-size: 16px; min-width: 16px; }
-    .requirement.valid::before { content: '✓ '; color: #6fd96f; }
-    .password-strength { margin-top: 14px; height: 6px; background: #1a1a1a; border-radius: 4px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5); border: 1px solid #0a0a0a; }
-    .password-strength-bar { height: 100%; width: 0%; transition: all 0.4s ease; border-radius: 4px; }
+    .password-requirements { margin-top: 20px; padding: 25px 28px; background: rgba(0,0,0,0.7); border-radius: 8px; border: 1px solid #333; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+    .requirement { padding: 10px 0; transition: all 0.3s ease; font-size: 14px; display: flex; align-items: center; }
+    .requirement.valid { color: #7fdf7f; font-weight: 500; }
+    .requirement.invalid { color: #aaa; }
+    .requirement::before { content: '✗ '; margin-right: 15px; font-weight: bold; font-size: 18px; min-width: 20px; }
+    .requirement.valid::before { content: '✓ '; color: #7fdf7f; }
+    .password-strength { margin-top: 16px; height: 8px; background: #0d0d0d; border-radius: 5px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.6); border: 1px solid #000; }
+    .password-strength-bar { height: 100%; width: 0%; transition: all 0.4s ease; border-radius: 5px; }
     .password-strength-bar.weak { width: 33%; background: linear-gradient(90deg, #ff4444 0%, #ff6b6b 100%); }
     .password-strength-bar.medium { width: 66%; background: linear-gradient(90deg, #ffa500 0%, #ffd93d 100%); }
     .password-strength-bar.strong { width: 100%; background: linear-gradient(90deg, #4caf50 0%, #6fd96f 100%); box-shadow: 0 0 10px rgba(76, 175, 80, 0.5); }
